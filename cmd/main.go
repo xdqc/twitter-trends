@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"log"
+	"time"
 
 	tweet "github.com/xdqc/dsm-assgn1-tweet"
 )
@@ -20,5 +22,9 @@ func init() {
 }
 
 func main() {
+	start := time.Now()
+
 	tweet.Run(directory, counterSize, output)
+
+	log.Printf("Process time: %d ms\n", time.Now().Sub(start).Nanoseconds()/1e6)
 }

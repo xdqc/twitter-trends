@@ -2,21 +2,21 @@ package spacesaving
 
 import (
 	"log"
-	"sync"
 )
 
 //Counter - the spacesaving counter
 type Counter struct {
-	list []Element
-	hash map[string]uint32
+	list    []Element
+	hash    map[string]uint32
+	isSuper bool
 }
 
 //Element - the buckt to hold each element
 type Element struct {
 	Key   string
 	Count uint64
-	//SubCounters e.g: Hashtag contains the keyword of hashtag itsself, as well as
-	// sub-counters of word and timezone associated with the key
+	//SubCounters e.g: Hashtag is the supercounter, it contains the keyword of hashtag itsself, as well as
+	// subcounters of word and timezone associated with the key
 	subCounters []*Counter
 }
 
@@ -25,16 +25,15 @@ var (
 	size int
 	//`2` indicates the two sub-counters for timezone and word associated with the hashtag, respectively
 	numSubCounters = 2
-	//Use mutex solve concurrent map read and map write problem
-	mutex = sync.RWMutex{}
 )
 
 //NewCounter initialise spacesaving counter
-func NewCounter(s int) *Counter {
+func NewCounter(s int, isRoot bool) *Counter {
 	size = s
 	ss := Counter{
-		list: make([]Element, size),
-		hash: make(map[string]uint32, size),
+		list:    make([]Element, size),
+		hash:    make(map[string]uint32, size),
+		isSuper: isRoot,
 	}
 	return &ss
 }
@@ -48,21 +47,28 @@ func (ss *Counter) Hit(key string) {
 	)
 
 	if idx, found = ss.hash[key]; found {
+		// exsisting element => increment count
 		bucket = &ss.list[idx]
 	} else {
-		// replace the lowest count with new element
+		// new element => replace the lowest count with new element
 		idx = 0
 		bucket = &ss.list[idx]
 		delete(ss.hash, bucket.Key)
 
 		ss.hash[key] = idx
 		bucket.Key = key
-		bucket.subCounters = make([]*Counter, 2)
-		for i := 0; i < numSubCounters; i++ {
-			bucket.subCounters[i] = NewCounter(size)
+
+		// In this project, the super counter is the hashtag counter
+		// only create subcounters for hashtag counter, not for
+		if ss.isSuper {
+			bucket.subCounters = make([]*Counter, 2)
+			for i := 0; i < numSubCounters; i++ {
+				bucket.subCounters[i] = NewCounter(size, false)
+			}
 		}
 	}
 
+	// increment count for the bucket
 	bucket.Count++
 
 	// sort the list, lower count in front and higher count in end
