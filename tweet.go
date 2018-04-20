@@ -1,7 +1,7 @@
 package tweet
 
-//Tweet the tweet json structure generated from online tool https://mholt.github.io/json-to-go/
-//(only care about relavent json objects/arrays for this project)
+//Tweet - the tweet json structure generated from online tool https://mholt.github.io/json-to-go/
+// (only care about relavent json objects/arrays for this project)
 type Tweet struct {
 	// PossiblySensitiveEditable bool        `json:"possibly_sensitive_editable"`
 	// Place                     interface{} `json:"place"`

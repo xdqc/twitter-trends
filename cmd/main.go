@@ -7,16 +7,18 @@ import (
 )
 
 var (
-	directory   string
 	counterSize int
+	directory   string
+	output      string
 )
 
 func init() {
-	flag.StringVar(&directory, "d", "", "The directory of tweet json files")
-	flag.IntVar(&counterSize, "n", 0, "The size of spacesaving counter")
+	flag.IntVar(&counterSize, "n", 1000, "The size of spacesaving counter")
+	flag.StringVar(&directory, "i", "march18", "The directory of input tweet json files")
+	flag.StringVar(&output, "o", "result18.csv", "The output filename for the result")
 	flag.Parse()
 }
 
 func main() {
-	tweet.Run(directory, counterSize)
+	tweet.Run(directory, counterSize, output)
 }

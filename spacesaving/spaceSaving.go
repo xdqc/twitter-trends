@@ -2,6 +2,7 @@ package spacesaving
 
 import (
 	"log"
+	"sync"
 )
 
 //Counter - the spacesaving counter
@@ -14,20 +15,23 @@ type Counter struct {
 type Element struct {
 	Key   string
 	Count uint64
-	// e.g: Hashtag contains the keyword of hashtag itsself, as well as
+	//SubCounters e.g: Hashtag contains the keyword of hashtag itsself, as well as
 	// sub-counters of word and timezone associated with the key
-	SubCounters []*Counter
+	subCounters []*Counter
 }
 
 var (
-	numSubCounters int
-	size           int
+	//use 1000 or 10000 for the number of element buckets of the counter
+	size int
+	//`2` indicates the two sub-counters for timezone and word associated with the hashtag, respectively
+	numSubCounters = 2
+	//Use mutex solve concurrent map read and map write problem
+	mutex = sync.RWMutex{}
 )
 
 //NewCounter initialise spacesaving counter
-func NewCounter(s int, n int) *Counter {
+func NewCounter(s int) *Counter {
 	size = s
-	numSubCounters = n
 	ss := Counter{
 		list: make([]Element, size),
 		hash: make(map[string]uint32, size),
@@ -53,9 +57,9 @@ func (ss *Counter) Hit(key string) {
 
 		ss.hash[key] = idx
 		bucket.Key = key
-		bucket.SubCounters = make([]*Counter, 2)
+		bucket.subCounters = make([]*Counter, 2)
 		for i := 0; i < numSubCounters; i++ {
-			bucket.SubCounters[i] = NewCounter(size, 2)
+			bucket.subCounters[i] = NewCounter(size)
 		}
 	}
 
@@ -87,10 +91,12 @@ func (ss *Counter) GetSubCounter(key string, i int) (subCounter *Counter) {
 	if i >= numSubCounters {
 		log.Panicln("sub-counter index out of bound")
 	}
+	// mutex.Lock()
 	if elemIdx, found := ss.hash[key]; found {
 		elem := ss.list[elemIdx]
-		return elem.SubCounters[i]
+		return elem.subCounters[i]
 	}
+	// mutex.Unlock()
 	log.Panicln("call for subcounter of no-exist supercounter")
 	return
 }
