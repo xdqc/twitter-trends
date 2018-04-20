@@ -26,5 +26,5 @@ func main() {
 
 	tweet.Run(directory, counterSize, output)
 
-	log.Printf("Process time: %d ms\n", time.Now().Sub(start).Nanoseconds()/1e6)
+	log.Printf("Process time: %.2f s\n", time.Now().Sub(start).Seconds())
 }
