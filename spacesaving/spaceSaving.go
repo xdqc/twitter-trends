@@ -9,11 +9,9 @@ var (
 	size int
 	//`2` indicates the two sub-counters for timezone and word associated with the hashtag, respectively
 	numSubCounters = 2
-	//Use mutex to solve concurrent map read and map write problem
-	// mutex sync.Mutex
 )
 
-//NewCounter - initialise spacesaving counter
+//NewCounter - initialise spacesaving counter, size 0 for memory hungry counter
 func NewCounter(s int, isSuperCounter bool) *Counter {
 	size = s
 	ss := Counter{
@@ -32,18 +30,29 @@ func (ss *Counter) Hit(key string) {
 		bucket *Element
 	)
 
-	// mutex.Lock()
 	if idx, found = ss.hash[key]; found {
 		// exsisting element => increment count
 		bucket = &ss.list[idx]
 	} else {
-		// new element => replace the lowest count with new element
 		idx = 0
-		bucket = &ss.list[idx]
-		delete(ss.hash, bucket.Key)
-
+		// Given size 0 for memory-hungry counter
+		if size > 0 {
+			// Space-Saving
+			// new element => replace the first element(lowest count) with new key
+			bucket = &ss.list[idx]
+			bucket.Key = key
+			delete(ss.hash, bucket.Key)
+		} else {
+			// Memory-Hungry
+			// new element => create new Element bucket
+			// prepend the new bucket to list (golang doesn't have build-in prepend(). Use append() to append the old list to an one element list)
+			bucket = &Element{
+				Key:   key,
+				Count: 0,
+			}
+			ss.list = append([]Element{*bucket}, ss.list...)
+		}
 		ss.hash[key] = idx
-		bucket.Key = key
 
 		// only create subcounters for supercounter
 		if ss.isSuper {
@@ -53,7 +62,6 @@ func (ss *Counter) Hit(key string) {
 			}
 		}
 	}
-	// mutex.Unlock()
 
 	// increment count for the bucket
 	bucket.Count++
@@ -82,15 +90,13 @@ func (ss *Counter) Hit(key string) {
 //GetSubCounter - get subcounter of the bucket with key
 func (ss *Counter) GetSubCounter(key string, i int) (subCounter *Counter) {
 	if i >= numSubCounters {
-		log.Panicln("sub-counter index out of bound")
+		log.Panicln("subcounter index out of bound")
 	}
-	// mutex.Lock()
 	if elemIdx, found := ss.hash[key]; found {
 		elem := ss.list[elemIdx]
 		return elem.subCounters[i]
 	}
-	// mutex.Unlock()
-	log.Panicln("call for subcounter of no-exist supercounter")
+	log.Panicln("call for subcounter under no-exist supercounter's bucket")
 	return
 }
 
