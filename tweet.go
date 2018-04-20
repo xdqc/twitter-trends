@@ -1,149 +1,80 @@
 package tweet
 
-//Tweet the tweet json structure generated from online tool https://mholt.github.io/json-to-go/ (only parse relavent entries for this project)
+//Tweet the tweet json structure generated from online tool https://mholt.github.io/json-to-go/
+//(only care about relavent json objects/arrays for this project)
 type Tweet struct {
-	// Favorited         bool        `json:"favorited"`
-	// Contributors      interface{} `json:"contributors"`
-	// Truncated         bool        `json:"truncated"`
+	// PossiblySensitiveEditable bool        `json:"possibly_sensitive_editable"`
+	// Place                     interface{} `json:"place"`
 	Text string `json:"text"`
-	// IsQuoteStatus     bool        `json:"is_quote_status"`
-	// InReplyToStatusID interface{} `json:"in_reply_to_status_id"`
+	// IDStr                     string      `json:"id_str"`
+	// Favorited                 bool        `json:"favorited"`
+	// PossiblySensitive         bool        `json:"possibly_sensitive"`
+	// Coordinates               interface{} `json:"coordinates"`
+	// Geo                       interface{} `json:"geo"`
+	// CreatedAt                 string      `json:"created_at"`
+	// InReplyToStatusIDStr      interface{} `json:"in_reply_to_status_id_str"`
+	// Contributors              interface{} `json:"contributors"`
+	// InReplyToScreenName       interface{} `json:"in_reply_to_screen_name"`
+	// Source                    string      `json:"source"`
+	// InReplyToUserIDStr        interface{} `json:"in_reply_to_user_id_str"`
+	// InReplyToUserID           interface{} `json:"in_reply_to_user_id"`
+	// InReplyToStatusID         interface{} `json:"in_reply_to_status_id"`
+	// Retweeted                 bool        `json:"retweeted"`
+	// RetweetCount              int         `json:"retweet_count"`
+	// Truncated                 bool        `json:"truncated"`
 	User struct {
-		// FollowRequestSent              interface{} `json:"follow_request_sent"`
-		// ProfileUseBackgroundImage      bool        `json:"profile_use_background_image"`
-		// DefaultProfileImage            bool        `json:"default_profile_image"`
-		// ID                             int64       `json:"id"`
-		// Verified                       bool        `json:"verified"`
-		// ProfileImageURLHTTPS           string      `json:"profile_image_url_https"`
-		// ProfileSidebarFillColor        string      `json:"profile_sidebar_fill_color"`
-		// ProfileTextColor               string      `json:"profile_text_color"`
-		// FollowersCount                 int         `json:"followers_count"`
-		// ProfileSidebarBorderColor      string      `json:"profile_sidebar_border_color"`
-		// IDStr                          string      `json:"id_str"`
-		// ProfileBackgroundColor         string      `json:"profile_background_color"`
-		// ListedCount                    int         `json:"listed_count"`
-		// ProfileBackgroundImageURLHTTPS string      `json:"profile_background_image_url_https"`
-		// UtcOffset                      interface{} `json:"utc_offset"`
-		// StatusesCount                  int         `json:"statuses_count"`
-		// Description                    string      `json:"description"`
-		// FriendsCount                   int         `json:"friends_count"`
-		// Location                       string      `json:"location"`
-		// ProfileLinkColor               string      `json:"profile_link_color"`
-		// ProfileImageURL                string      `json:"profile_image_url"`
-		// Following                      interface{} `json:"following"`
-		// GeoEnabled                     bool        `json:"geo_enabled"`
-		// ProfileBackgroundImageURL      string      `json:"profile_background_image_url"`
-		// Name                           string      `json:"name"`
-		// Lang                           string      `json:"lang"`
-		// ProfileBackgroundTile          bool        `json:"profile_background_tile"`
-		// FavouritesCount                int         `json:"favourites_count"`
-		// ScreenName                     string      `json:"screen_name"`
-		// Notifications                  interface{} `json:"notifications"`
-		// URL                            interface{} `json:"url"`
-		// CreatedAt                      string      `json:"created_at"`
-		// ContributorsEnabled            bool        `json:"contributors_enabled"`
-		TimeZone interface{} `json:"time_zone"`
-		// Protected                      bool        `json:"protected"`
-		// DefaultProfile                 bool        `json:"default_profile"`
 		// IsTranslator                   bool        `json:"is_translator"`
+		// ProfileUseBackgroundImage      bool        `json:"profile_use_background_image"`
+		// ProfileImageURLHTTPS           string      `json:"profile_image_url_https"`
+		// IDStr                          string      `json:"id_str"`
+		// ProfileTextColor               string      `json:"profile_text_color"`
+		// StatusesCount                  int         `json:"statuses_count"`
+		// Following                      interface{} `json:"following"`
+		// ProfileBackgroundImageURL      string      `json:"profile_background_image_url"`
+		// FollowersCount                 int         `json:"followers_count"`
+		// ProfileImageURL                string      `json:"profile_image_url"`
+		// DefaultProfileImage            bool        `json:"default_profile_image"`
+		// CreatedAt                      string      `json:"created_at"`
+		// ProfileLinkColor               string      `json:"profile_link_color"`
+		// Description                    string      `json:"description"`
+		TimeZone string `json:"time_zone"`
+		// FavouritesCount                int         `json:"favourites_count"`
+		// FriendsCount                   int         `json:"friends_count"`
+		// URL                            string      `json:"url"`
+		// Verified                       bool        `json:"verified"`
+		// ProfileBackgroundColor         string      `json:"profile_background_color"`
+		// ProfileBackgroundTile          bool        `json:"profile_background_tile"`
+		// ProfileBackgroundImageURLHTTPS string      `json:"profile_background_image_url_https"`
+		// ContributorsEnabled            bool        `json:"contributors_enabled"`
+		// GeoEnabled                     bool        `json:"geo_enabled"`
+		// Notifications                  interface{} `json:"notifications"`
+		// ProfileSidebarFillColor        string      `json:"profile_sidebar_fill_color"`
+		// Protected                      bool        `json:"protected"`
+		// Location                       string      `json:"location"`
+		// ListedCount                    int         `json:"listed_count"`
+		// FollowRequestSent              interface{} `json:"follow_request_sent"`
+		// Name                           string      `json:"name"`
+		// ProfileSidebarBorderColor      string      `json:"profile_sidebar_border_color"`
+		// ID                             int         `json:"id"`
+		// DefaultProfile                 bool        `json:"default_profile"`
+		// ShowAllInlineMedia             bool        `json:"show_all_inline_media"`
+		// Lang string `json:"lang"`
+		// UtcOffset  int    `json:"utc_offset"`
+		// ScreenName string `json:"screen_name"`
 	} `json:"user"`
-	// FilterLevel     string      `json:"filter_level"`
-	// Geo             interface{} `json:"geo"`
-	// ID              int64       `json:"id"`
-	// FavoriteCount   int         `json:"favorite_count"`
 	Lang string `json:"lang"`
-	// RetweetedStatus struct {
-	// 	Contributors      interface{} `json:"contributors"`
-	// 	Truncated         bool        `json:"truncated"`
-	// 	Text              string      `json:"text"`
-	// 	IsQuoteStatus     bool        `json:"is_quote_status"`
-	// 	InReplyToStatusID interface{} `json:"in_reply_to_status_id"`
-	// 	ID                int64       `json:"id"`
-	// 	FavoriteCount     int         `json:"favorite_count"`
-	// 	Source            string      `json:"source"`
-	// 	Retweeted         bool        `json:"retweeted"`
-	// 	Coordinates       interface{} `json:"coordinates"`
-	// 	Entities          struct {
-	// 		UserMentions []interface{} `json:"user_mentions"`
-	// 		Symbols      []interface{} `json:"symbols"`
-	// 		Hashtags     []interface{} `json:"hashtags"`
-	// 		Urls         []interface{} `json:"urls"`
-	// 	} `json:"entities"`
-	// 	InReplyToScreenName interface{} `json:"in_reply_to_screen_name"`
-	// 	IDStr               string      `json:"id_str"`
-	// 	RetweetCount        int         `json:"retweet_count"`
-	// 	InReplyToUserID     interface{} `json:"in_reply_to_user_id"`
-	// 	Favorited           bool        `json:"favorited"`
-	// 	User                struct {
-	// 		FollowRequestSent              interface{} `json:"follow_request_sent"`
-	// 		ProfileUseBackgroundImage      bool        `json:"profile_use_background_image"`
-	// 		DefaultProfileImage            bool        `json:"default_profile_image"`
-	// 		ID                             int         `json:"id"`
-	// 		Verified                       bool        `json:"verified"`
-	// 		ProfileImageURLHTTPS           string      `json:"profile_image_url_https"`
-	// 		ProfileSidebarFillColor        string      `json:"profile_sidebar_fill_color"`
-	// 		ProfileTextColor               string      `json:"profile_text_color"`
-	// 		FollowersCount                 int         `json:"followers_count"`
-	// 		ProfileSidebarBorderColor      string      `json:"profile_sidebar_border_color"`
-	// 		IDStr                          string      `json:"id_str"`
-	// 		ProfileBackgroundColor         string      `json:"profile_background_color"`
-	// 		ListedCount                    int         `json:"listed_count"`
-	// 		ProfileBackgroundImageURLHTTPS string      `json:"profile_background_image_url_https"`
-	// 		UtcOffset                      interface{} `json:"utc_offset"`
-	// 		StatusesCount                  int         `json:"statuses_count"`
-	// 		Description                    string      `json:"description"`
-	// 		FriendsCount                   int         `json:"friends_count"`
-	// 		Location                       interface{} `json:"location"`
-	// 		ProfileLinkColor               string      `json:"profile_link_color"`
-	// 		ProfileImageURL                string      `json:"profile_image_url"`
-	// 		Following                      interface{} `json:"following"`
-	// 		GeoEnabled                     bool        `json:"geo_enabled"`
-	// 		ProfileBannerURL               string      `json:"profile_banner_url"`
-	// 		ProfileBackgroundImageURL      string      `json:"profile_background_image_url"`
-	// 		Name                           string      `json:"name"`
-	// 		Lang                           string      `json:"lang"`
-	// 		ProfileBackgroundTile          bool        `json:"profile_background_tile"`
-	// 		FavouritesCount                int         `json:"favourites_count"`
-	// 		ScreenName                     string      `json:"screen_name"`
-	// 		Notifications                  interface{} `json:"notifications"`
-	// 		URL                            string      `json:"url"`
-	// 		CreatedAt                      string      `json:"created_at"`
-	// 		ContributorsEnabled            bool        `json:"contributors_enabled"`
-	// 		TimeZone                       interface{} `json:"time_zone"`
-	// 		Protected                      bool        `json:"protected"`
-	// 		DefaultProfile                 bool        `json:"default_profile"`
-	// 		IsTranslator                   bool        `json:"is_translator"`
-	// 	} `json:"user"`
-	// 	Geo                  interface{} `json:"geo"`
-	// 	InReplyToUserIDStr   interface{} `json:"in_reply_to_user_id_str"`
-	// 	Lang                 string      `json:"lang"`
-	// 	CreatedAt            string      `json:"created_at"`
-	// 	FilterLevel          string      `json:"filter_level"`
-	// 	InReplyToStatusIDStr interface{} `json:"in_reply_to_status_id_str"`
-	// 	Place                interface{} `json:"place"`
-	// } `json:"retweeted_status"`
+	// ID       int64 `json:"id"`
 	Entities struct {
-		// UserMentions []struct {
-		// 	ID         int    `json:"id"`
-		// 	Indices    []int  `json:"indices"`
-		// 	IDStr      string `json:"id_str"`
-		// 	ScreenName string `json:"screen_name"`
-		// 	Name       string `json:"name"`
-		// } `json:"user_mentions"`
-		// Symbols  []interface{} `json:"symbols"`
-		Hashtags []interface{} `json:"hashtags"`
-		// Urls     []interface{} `json:"urls"`
+		// Urls []struct {
+		// 	DisplayURL  string `json:"display_url"`
+		// 	Indices     []int  `json:"indices"`
+		// 	URL         string `json:"url"`
+		// 	ExpandedURL string `json:"expanded_url"`
+		// } `json:"urls"`
+		Hashtags []struct {
+			Text string `json:"text"`
+			// Indices []int  `json:"indices"`
+		} `json:"hashtags"`
+		// UserMentions []interface{} `json:"user_mentions"`
 	} `json:"entities"`
-	// InReplyToUserIDStr   interface{} `json:"in_reply_to_user_id_str"`
-	// Retweeted            bool        `json:"retweeted"`
-	// Coordinates          interface{} `json:"coordinates"`
-	// TimestampMs          string      `json:"timestamp_ms"`
-	// Source               string      `json:"source"`
-	// InReplyToStatusIDStr interface{} `json:"in_reply_to_status_id_str"`
-	// InReplyToScreenName  interface{} `json:"in_reply_to_screen_name"`
-	// IDStr                string      `json:"id_str"`
-	// Place                interface{} `json:"place"`
-	// RetweetCount         int         `json:"retweet_count"`
-	// CreatedAt            string      `json:"created_at"`
-	// InReplyToUserID      interface{} `json:"in_reply_to_user_id"`
 }
