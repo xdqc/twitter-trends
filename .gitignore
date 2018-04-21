@@ -16,6 +16,7 @@
 /**/march19/
 /**/march20/
 *.csv
+*.json
 
 #config
 *.yml
