@@ -22,7 +22,7 @@ func NewCounter(s int, isSuperCounter bool) *Counter {
 	return &ss
 }
 
-//Hit - for every instance in stream, update the counter and return it
+//Hit - for every instance in stream, update the counter and return it (for passing counter in channel)
 func (ss *Counter) Hit(key string) *Counter {
 	var (
 		idx    uint32
