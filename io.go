@@ -2,12 +2,14 @@ package tweet
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
+	"github.com/ChimeraCoder/anaconda"
 	ss "github.com/xdqc/dsm-assgn1-tweet/spacesaving"
 )
 
@@ -27,7 +29,47 @@ func filesInDirectory(dir string) (files []string) {
 
 //Approach1: Output the result to csv file
 func outputToCSV1(hstgCtr *ss.Counter, tzCtr *ss.Counter, wdCtr *ss.Counter, outFile string) {
+	file, err := os.Create(outFile)
+	if err != nil {
+		log.Panicln("Cannot create file: " + err.Error())
+	}
+	defer file.Close()
 
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	// Hashtag counter
+	writer.Write([]string{"Rank", "Hashtag", "Count"})
+	for i, elem := range hstgCtr.GetAll() {
+		values := []string{strconv.Itoa(i), elem.Key, strconv.FormatUint(elem.Count, 10)}
+		err := writer.Write(values)
+		if err != nil {
+			log.Panicln("Cannot write to file: " + err.Error())
+		}
+	}
+	writer.Write([]string{})
+
+	// Hashtag&TimeZone counter
+	writer.Write([]string{"Rank", "Hashtag&TimeZone", "Count"})
+	for i, elem := range tzCtr.GetAll() {
+		values := []string{strconv.Itoa(i), elem.Key, strconv.FormatUint(elem.Count, 10)}
+		err := writer.Write(values)
+		if err != nil {
+			log.Panicln("Cannot write to file: " + err.Error())
+		}
+	}
+	writer.Write([]string{})
+
+	// Hashtag&Word counter
+	writer.Write([]string{"Rank", "Hashtag&Word", "Count"})
+	for i, elem := range wdCtr.GetAll() {
+		values := []string{strconv.Itoa(i), elem.Key, strconv.FormatUint(elem.Count, 10)}
+		err := writer.Write(values)
+		if err != nil {
+			log.Panicln("Cannot write to file: " + err.Error())
+		}
+	}
+	writer.Write([]string{})
 }
 
 //Approach2: Output the result to csv file
@@ -79,5 +121,23 @@ func outputToCSV2(counter *ss.Counter, outFile string) {
 			}
 		}
 		writer.Write([]string{})
+	}
+}
+
+func writeTweetFile(t anaconda.Tweet, filepath string) {
+	bs, err := json.Marshal(t)
+	if err != nil {
+		log.Panicln("parse tweet error" + err.Error())
+	}
+
+	f, err := os.OpenFile(filepath, os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		panic(err)
+	}
+
+	defer f.Close()
+
+	if _, err = f.Write(bs); err != nil {
+		panic(err)
 	}
 }

@@ -52,23 +52,13 @@ func processTweetFile(approach int, filename string, hstgCtr *ss.Counter, tzCtr 
 	defer tweetFile.Close()
 	scanner := bufio.NewScanner(tweetFile)
 
-	var tweets []*Tweet
+	// for each line in the file, process a tweet
 	for scanner.Scan() {
 		var t *Tweet
 		err := json.Unmarshal(scanner.Bytes(), &t)
 		if err != nil {
 			log.Println("parse tweet err: " + err.Error())
 		}
-		tweets = append(tweets, t)
-	}
-
-	// for each line in the file, process a tweet
-	for _, t := range tweets {
-		// var t *Tweet
-		// err := json.Unmarshal(scanner.Bytes(), &t)
-		// if err != nil {
-		// 	log.Println("parse tweet err: " + err.Error())
-		// }
 
 		hashtags := t.Entities.Hashtags
 		tz := t.User.TimeZone
@@ -77,11 +67,29 @@ func processTweetFile(approach int, filename string, hstgCtr *ss.Counter, tzCtr 
 		for _, hashtag := range hashtags {
 			if approach == 1 {
 				//Approach1: count hashtag, hashtag&timezone, hashtag&word parallelly
-				hstgCtr.Hit(hashtag.Text)
-				tzCtr.Hit(hashtag.Text + " * " + tz)
-				for _, word := range words {
-					wdCtr.Hit(hashtag.Text + " * " + word)
-				}
+				go func() {
+					wg.Add(1)
+					defer wg.Done()
+					mutex.Lock()
+					hstgCtr.Hit(hashtag.Text)
+					mutex.Unlock()
+				}()
+				go func() {
+					wg.Add(1)
+					defer wg.Done()
+					mutex2.Lock()
+					tzCtr.Hit(hashtag.Text + " * " + tz)
+					mutex2.Unlock()
+				}()
+				go func() {
+					wg.Add(1)
+					defer wg.Done()
+					for _, word := range words {
+						mutex3.Lock()
+						wdCtr.Hit(hashtag.Text + " * " + word)
+						mutex3.Unlock()
+					}
+				}()
 
 			} else if approach == 2 {
 				//Approach2: count timezone and word under each hashtag

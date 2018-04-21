@@ -22,8 +22,8 @@ func NewCounter(s int, isSuperCounter bool) *Counter {
 	return &ss
 }
 
-//Hit - for every instance in stream
-func (ss *Counter) Hit(key string) {
+//Hit - for every instance in stream, update the counter and return it
+func (ss *Counter) Hit(key string) *Counter {
 	var (
 		idx    uint32
 		found  bool
@@ -52,6 +52,7 @@ func (ss *Counter) Hit(key string) {
 			}
 			ss.list = append([]Element{*bucket}, ss.list...)
 		}
+
 		ss.hash[key] = idx
 
 		// only create subcounters for supercounter
@@ -85,6 +86,7 @@ func (ss *Counter) Hit(key string) {
 		*b1, *b2 = *b2, *b1
 		idx++
 	}
+	return ss
 }
 
 //GetSubCounter - get subcounter of the bucket with key
