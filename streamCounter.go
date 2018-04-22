@@ -64,7 +64,7 @@ func RunStream(approach int, counterSize int, runTimeMinuts int, isChinese bool)
 
 // Process a tweet in the stream.
 // The first three counters for approach #1, the last counter for approach #2
-func processTweetStream(t anaconda.Tweet, approach int, chinese bool, counters ...*ss.Counter) {
+func processTweetStream(t anaconda.Tweet, approach int, chinese bool, counters ...ss.Counter) {
 
 	hashtags := t.Entities.Hashtags
 	tz := t.User.TimeZone

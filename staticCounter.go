@@ -52,7 +52,7 @@ func Run(approach int, dir string, counterSize int, outFile string, chinese bool
 
 // Process a tweet file.
 // The first three counters args for approach #1, the last counter arg for approach #2
-func processTweetFile(approach int, filename string, hstgCtr *ss.Counter, tzCtr *ss.Counter, wdCtr *ss.Counter, hashtagCounter *ss.Counter, chinese bool, wg *sync.WaitGroup) {
+func processTweetFile(approach int, filename string, hstgCtr ss.Counter, tzCtr ss.Counter, wdCtr ss.Counter, hashtagCounter ss.Counter, chinese bool, wg *sync.WaitGroup) {
 	wg.Add(1)
 	defer wg.Done()
 
@@ -97,7 +97,7 @@ func processTweetFile(approach int, filename string, hstgCtr *ss.Counter, tzCtr 
 }
 
 // Approach1: count pararrell
-func countParallel(hashtag string, tz string, words []string, wg *sync.WaitGroup, counters ...*ss.Counter) {
+func countParallel(hashtag string, tz string, words []string, wg *sync.WaitGroup, counters ...ss.Counter) {
 	go func() {
 		wg.Add(1)
 		defer wg.Done()
@@ -124,7 +124,7 @@ func countParallel(hashtag string, tz string, words []string, wg *sync.WaitGroup
 }
 
 // Approach2: count timezone and word under each hashtag
-func countPerHashtagAssociate(hashtag string, timezone string, words []string, counter *ss.Counter) {
+func countPerHashtagAssociate(hashtag string, timezone string, words []string, counter ss.Counter) {
 	/* Tried to put smaller mutex locked `sync block` in spacesaving package,
 		however, prune to cause DEADLOCK, and very hard to debug.
 	Just put a big mutex locked block here, may be detrimental to efficiency though. */

@@ -11,10 +11,10 @@ var (
 	numSubCounters = 2
 )
 
-//NewCounter - initialise spacesaving counter, size 0 for memory hungry counter
-func NewCounter(s int, isSuperCounter bool) *Counter {
+//NewSSCounter - initialise spacesaving counter
+func NewSSCounter(s int, isSuperCounter bool) *SSCounter {
 	size = s
-	ss := Counter{
+	ss := SSCounter{
 		list:    make([]Element, size),
 		hash:    make(map[string]uint32, size),
 		isSuper: isSuperCounter,
@@ -22,8 +22,8 @@ func NewCounter(s int, isSuperCounter bool) *Counter {
 	return &ss
 }
 
-//Hit - for every instance in stream, update the counter and return it (for passing counter in channel)
-func (ss *Counter) Hit(key string) *Counter {
+//Hit - for every instance in stream, update the counter
+func (ss *SSCounter) Hit(key string) {
 	var (
 		idx    uint32
 		found  bool
@@ -34,32 +34,18 @@ func (ss *Counter) Hit(key string) *Counter {
 		// exsisting element => increment count
 		bucket = &ss.list[idx]
 	} else {
+		// new element => replace the first element(lowest count) with new key
 		idx = 0
-		// Given size 0 for memory-hungry counter
-		if size > 0 {
-			// Space-Saving
-			// new element => replace the first element(lowest count) with new key
-			bucket = &ss.list[idx]
-			bucket.Key = key
-			delete(ss.hash, bucket.Key)
-		} else {
-			// Memory-Hungry
-			// new element => create new Element bucket
-			// prepend the new bucket to list (golang doesn't have build-in prepend(). Use append() to append the old list to an one element list)
-			bucket = &Element{
-				Key:   key,
-				Count: 0,
-			}
-			ss.list = append([]Element{*bucket}, ss.list...)
-		}
-
+		bucket = &ss.list[idx]
+		bucket.Key = key
+		delete(ss.hash, bucket.Key)
 		ss.hash[key] = idx
 
 		// only create subcounters for supercounter
 		if ss.isSuper {
-			bucket.subCounters = make([]*Counter, 2)
+			bucket.subCounters = make([]*SSCounter, 2)
 			for i := 0; i < numSubCounters; i++ {
-				bucket.subCounters[i] = NewCounter(size, false)
+				bucket.subCounters[i] = NewSSCounter(size, false)
 			}
 		}
 	}
@@ -86,11 +72,10 @@ func (ss *Counter) Hit(key string) *Counter {
 		*b1, *b2 = *b2, *b1
 		idx++
 	}
-	return ss
 }
 
 //GetSubCounter - get subcounter of the bucket with key
-func (ss *Counter) GetSubCounter(key string, i int) (subCounter *Counter) {
+func (ss *SSCounter) GetSubCounter(key string, i int) (subCounter *SSCounter) {
 	if i >= numSubCounters {
 		log.Panicln("subcounter index out of bound")
 	}
@@ -103,7 +88,7 @@ func (ss *Counter) GetSubCounter(key string, i int) (subCounter *Counter) {
 }
 
 //GetAll return all elements in the counter
-func (ss *Counter) GetAll() (elements []Element) {
+func (ss *SSCounter) GetAll() (elements ElementList) {
 	elements = make([]Element, 0, len(ss.hash))
 	// output from higt to low count
 	for i := len(ss.list) - 1; i >= 0; i-- {
@@ -121,7 +106,7 @@ func (ss *Counter) GetAll() (elements []Element) {
 }
 
 //Counter - the spacesaving counter
-type Counter struct {
+type SSCounter struct {
 	list    []Element
 	hash    map[string]uint32 //value:indexOfKeyInTheList
 	isSuper bool
@@ -133,5 +118,5 @@ type Element struct {
 	Count uint64
 	//SubCounters e.g: Hashtag is the supercounter, it contains the keyword of hashtag itsself, as well as
 	// subcounters of word and timezone associated with the key
-	subCounters []*Counter
+	subCounters []*SSCounter
 }

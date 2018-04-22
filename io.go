@@ -28,7 +28,7 @@ func filesInDirectory(dir string) (files []string) {
 }
 
 //Approach1: Output the result to csv file
-func outputToCSV1(hstgCtr *ss.Counter, tzCtr *ss.Counter, wdCtr *ss.Counter, outFile string) {
+func outputToCSV1(hstgCtr ss.Counter, tzCtr ss.Counter, wdCtr ss.Counter, outFile string) {
 	file, err := os.Create(outFile)
 	if err != nil {
 		log.Panicln("Cannot create file: " + err.Error())
@@ -73,7 +73,7 @@ func outputToCSV1(hstgCtr *ss.Counter, tzCtr *ss.Counter, wdCtr *ss.Counter, out
 }
 
 //Approach2: Output the result to csv file
-func outputToCSV2(counter *ss.Counter, outFile string) {
+func outputToCSV2(counter ss.Counter, outFile string) {
 	file, err := os.Create(outFile)
 	if err != nil {
 		log.Panicln("Cannot create file: " + err.Error())
