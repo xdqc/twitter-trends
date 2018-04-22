@@ -15,10 +15,23 @@ var (
 func NewSSCounter(s int, isSuperCounter bool) *SSCounter {
 	size = s
 	ss := SSCounter{
-		list:    make([]Element, size),
+		list:    make([]*Element, size),
 		hash:    make(map[string]uint32, size),
 		isSuper: isSuperCounter,
 	}
+
+	for i := 0; i < size; i++ {
+		bucket := &Element{}
+		// only create subcounters for supercounter
+		if ss.isSuper {
+			bucket.subCounters = make([]Counter, numSubCounters)
+			for i := 0; i < numSubCounters; i++ {
+				bucket.subCounters[i] = NewSSCounter(size, false)
+			}
+		}
+		ss.list[i] = bucket
+	}
+
 	return &ss
 }
 
@@ -32,22 +45,14 @@ func (ss *SSCounter) Hit(key string) {
 
 	if idx, found = ss.hash[key]; found {
 		// exsisting element => increment count
-		bucket = &ss.list[idx]
+		bucket = ss.list[idx]
 	} else {
 		// new element => replace the first element(lowest count) with new key
 		idx = 0
-		bucket = &ss.list[idx]
-		bucket.Key = key
+		bucket = ss.list[idx]
 		delete(ss.hash, bucket.Key)
+		bucket.Key = key
 		ss.hash[key] = idx
-
-		// only create subcounters for supercounter
-		if ss.isSuper {
-			bucket.subCounters = make([]*SSCounter, 2)
-			for i := 0; i < numSubCounters; i++ {
-				bucket.subCounters[i] = NewSSCounter(size, false)
-			}
-		}
 	}
 
 	// increment count for the bucket
@@ -59,23 +64,24 @@ func (ss *SSCounter) Hit(key string) {
 			break
 		}
 
-		b1 := &ss.list[idx]
-		b2 := &ss.list[idx+1]
+		b1 := ss.list[idx]
+		b2 := ss.list[idx+1]
+
 		//ignore counting ties
 		if b1.Count <= b2.Count {
 			break
 		}
 
-		//switch buckets
+		//switch buckets pointer
 		ss.hash[b1.Key] = idx + 1
 		ss.hash[b2.Key] = idx
-		*b1, *b2 = *b2, *b1
+		ss.list[idx], ss.list[idx+1] = b2, b1
 		idx++
 	}
 }
 
 //GetSubCounter - get subcounter of the bucket with key
-func (ss *SSCounter) GetSubCounter(key string, i int) (subCounter *SSCounter) {
+func (ss *SSCounter) GetSubCounter(key string, i int) (subCounter Counter) {
 	if i >= numSubCounters {
 		log.Panicln("subcounter index out of bound")
 	}
@@ -92,8 +98,8 @@ func (ss *SSCounter) GetAll() (elements ElementList) {
 	elements = make([]Element, 0, len(ss.hash))
 	// output from higt to low count
 	for i := len(ss.list) - 1; i >= 0; i-- {
-		b := &ss.list[i]
-		// ignore empty string
+		b := ss.list[i]
+		// ignore empty
 		if b.Key == "" {
 			continue
 		}
@@ -105,18 +111,9 @@ func (ss *SSCounter) GetAll() (elements ElementList) {
 	return
 }
 
-//Counter - the spacesaving counter
+//SSCounter - the spacesaving counter
 type SSCounter struct {
-	list    []Element
+	list    []*Element
 	hash    map[string]uint32 //value:indexOfKeyInTheList
 	isSuper bool
-}
-
-//Element - the bucket to hold each element
-type Element struct {
-	Key   string
-	Count uint64
-	//SubCounters e.g: Hashtag is the supercounter, it contains the keyword of hashtag itsself, as well as
-	// subcounters of word and timezone associated with the key
-	subCounters []*SSCounter
 }
