@@ -74,7 +74,7 @@ func processTweetFile(approach int, filename string, hstgCtr ss.Counter, tzCtr s
 
 		if chinese {
 			if strings.Index(t.Lang, "zh") < 0 {
-				break
+				continue
 			} else {
 				useHMM := true
 				words = JB.Cut(t.Text, useHMM)

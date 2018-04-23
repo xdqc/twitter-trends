@@ -21,15 +21,7 @@ func NewSSCounter(s int, isSuperCounter bool) *SSCounter {
 	}
 
 	for i := 0; i < size; i++ {
-		bucket := &Element{}
-		// only create subcounters for supercounter
-		if ss.isSuper {
-			bucket.subCounters = make([]Counter, numSubCounters)
-			for i := 0; i < numSubCounters; i++ {
-				bucket.subCounters[i] = NewSSCounter(size, false)
-			}
-		}
-		ss.list[i] = bucket
+		ss.list[i] = &Element{}
 	}
 
 	return &ss
@@ -53,6 +45,13 @@ func (ss *SSCounter) Hit(key string) {
 		delete(ss.hash, bucket.Key)
 		bucket.Key = key
 		ss.hash[key] = idx
+		// only create subcounters for supercounter
+		if ss.isSuper {
+			bucket.subCounters = make([]Counter, numSubCounters)
+			for i := 0; i < numSubCounters; i++ {
+				bucket.subCounters[i] = NewSSCounter(size, false)
+			}
+		}
 	}
 
 	// increment count for the bucket
