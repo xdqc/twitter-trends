@@ -49,7 +49,7 @@ func (ss *SSCounter) Hit(key string) {
 		if ss.isSuper {
 			bucket.subCounters = make([]Counter, numSubCounters)
 			for i := 0; i < numSubCounters; i++ {
-				bucket.subCounters[i] = NewSSCounter(size, false)
+				bucket.subCounters[i] = NewSSCounter(1000, false)
 			}
 		}
 	}

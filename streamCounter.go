@@ -3,9 +3,12 @@ package tweet
 import (
 	"log"
 	"net/url"
+	"os"
+	"os/signal"
 	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/ChimeraCoder/anaconda"
@@ -33,8 +36,13 @@ func RunStream(approach int, counterSize int, runTimeMinuts int, isChinese bool)
 	hashtagAssociateCounter := ss.NewCounter(counterSize, true) // used for approach2
 
 	// Start timer
+	start := time.Now()
 	stop := make(chan int)
 	go afterTimer(&stop, runTimeMinuts)
+
+	//listen to system signal
+	sig := make(chan os.Signal)
+	signal.Notify(sig, syscall.SIGINFO) //CTRL+T
 
 	for {
 		select {
@@ -50,6 +58,7 @@ func RunStream(approach int, counterSize int, runTimeMinuts int, isChinese bool)
 		case <-stop:
 			stream.Stop()
 			log.Println("Time up")
+
 			//output results to file
 			filename := "stream_result/" + strings.Replace(time.Now().Format(time.RFC3339), ":", "", -1) + "_" + strconv.Itoa(runTimeMinuts) + ".csv"
 			if approach == 1 {
@@ -58,6 +67,17 @@ func RunStream(approach int, counterSize int, runTimeMinuts int, isChinese bool)
 				outputToCSV2(hashtagAssociateCounter, filename)
 			}
 			return
+
+		case <-sig:
+			log.Printf("Stream counter has been running for %.2f hours...\n", time.Now().Sub(start).Hours())
+
+			//output sketchy results to file when user press ctrl+t
+			filename := "stream_result/" + strings.Replace(time.Now().Format(time.RFC3339), ":", "", -1) + "_" + strconv.Itoa(int(time.Now().Sub(start).Minutes())) + "_T.csv"
+			if approach == 1 {
+				outputToCSV1(hstgCounter, timezoneHstgCounter, wordHstgCounter, filename)
+			} else if approach == 2 {
+				outputToCSV2(hashtagAssociateCounter, filename)
+			}
 		}
 	}
 }
