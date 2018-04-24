@@ -86,12 +86,17 @@ func RunStream(approach int, counterSize int, runTimeMinuts int, isChinese bool)
 // The first three counters for approach #1, the last counter for approach #2
 func processTweetStream(t anaconda.Tweet, approach int, chinese bool, counters ...ss.Counter) {
 
+	// // Only count tweet with content
+	// if len(t.Text) <= 2 {
+	// 	return
+	// }
+
 	hashtags := t.Entities.Hashtags
 	tz := t.User.TimeZone
 	words := make([]string, 0)
 
 	if chinese {
-		if strings.Index(t.Lang, "zh") < 0 {
+		if strings.Index(t.Lang, "zh") < 0 && strings.Index(t.User.Lang, "zh") < 0 {
 			return
 		}
 		useHMM := true

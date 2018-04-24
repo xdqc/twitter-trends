@@ -39,6 +39,7 @@ func outputToCSV1(hstgCtr ss.Counter, tzCtr ss.Counter, wdCtr ss.Counter, outFil
 	defer writer.Flush()
 
 	// Hashtag counter
+	mutex.Lock()
 	writer.Write([]string{"Rank", "Hashtag", "Count"})
 	for i, elem := range hstgCtr.GetAll() {
 		values := []string{strconv.Itoa(i), elem.Key, strconv.FormatUint(elem.Count, 10)}
@@ -47,9 +48,11 @@ func outputToCSV1(hstgCtr ss.Counter, tzCtr ss.Counter, wdCtr ss.Counter, outFil
 			log.Panicln("Cannot write to file: " + err.Error())
 		}
 	}
+	mutex.Unlock()
 	writer.Write([]string{})
 
 	// Hashtag&TimeZone counter
+	mutex2.Lock()
 	writer.Write([]string{"Rank", "Hashtag&TimeZone", "Count"})
 	for i, elem := range tzCtr.GetAll() {
 		values := []string{strconv.Itoa(i), elem.Key, strconv.FormatUint(elem.Count, 10)}
@@ -58,9 +61,11 @@ func outputToCSV1(hstgCtr ss.Counter, tzCtr ss.Counter, wdCtr ss.Counter, outFil
 			log.Panicln("Cannot write to file: " + err.Error())
 		}
 	}
+	mutex2.Unlock()
 	writer.Write([]string{})
 
 	// Hashtag&Word counter
+	mutex3.Lock()
 	writer.Write([]string{"Rank", "Hashtag&Word", "Count"})
 	for i, elem := range wdCtr.GetAll() {
 		values := []string{strconv.Itoa(i), elem.Key, strconv.FormatUint(elem.Count, 10)}
@@ -69,6 +74,7 @@ func outputToCSV1(hstgCtr ss.Counter, tzCtr ss.Counter, wdCtr ss.Counter, outFil
 			log.Panicln("Cannot write to file: " + err.Error())
 		}
 	}
+	mutex3.Unlock()
 	writer.Write([]string{})
 }
 
@@ -85,6 +91,7 @@ func outputToCSV2(counter ss.Counter, outFile string) {
 
 	// Hashtag counter
 	writer.Write([]string{"Rank", "Hashtag", "Count", "Uniq_Timezones", "Unique_Words"})
+	mutex.Lock()
 	for i, elem := range counter.GetAll() {
 		numUniqTZ := len(counter.GetSubCounter(elem.Key, 0).GetAll())
 		numUniqWord := len(counter.GetSubCounter(elem.Key, 1).GetAll())
@@ -96,8 +103,8 @@ func outputToCSV2(counter ss.Counter, outFile string) {
 	}
 	writer.Write([]string{})
 
-	// output timezone and words result for first 10 hashtags
-	for i, hstg := range counter.GetAll()[:10] {
+	// output timezone and words result for first 1000 hashtags
+	for i, hstg := range counter.GetAll() {
 		// TimeZone counter
 		writer.Write([]string{"HT_rank", "Hashtag", "TZ_Rank", "TimeZone", "Count"})
 		for j, tz := range counter.GetSubCounter(hstg.Key, 0).GetAll() {
@@ -122,6 +129,7 @@ func outputToCSV2(counter ss.Counter, outFile string) {
 		}
 		writer.Write([]string{})
 	}
+	mutex.Unlock()
 }
 
 func writeTweetFile(t anaconda.Tweet, filepath string) {
