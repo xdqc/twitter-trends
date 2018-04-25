@@ -15,10 +15,11 @@ import (
 
 //Use mutex to solve concurrent map read and map write problem
 var (
-	mutex  sync.Mutex
-	mutex2 sync.Mutex
-	mutex3 sync.Mutex
-	JB     *gojieba.Jieba
+	mutex                              sync.Mutex
+	mutex2                             sync.Mutex
+	mutex3                             sync.Mutex
+	JB                                 *gojieba.Jieba
+	numTopHeavyHitterThatHasSubcounter = 1000
 )
 
 //Run - batch count for saved tweets
@@ -133,12 +134,14 @@ func countPerHashtagAssociate(hashtag string, timezone string, words []string, c
 	//count hashtags
 	counter.Hit(hashtag)
 
-	//count timezone associated with the hashtag, use the 0-th subcounter of buckets of hashtagCouter as Timezon counter
-	counter.GetSubCounter(hashtag, 0).Hit(timezone)
+	if tzCounter := counter.GetSubCounter(hashtag, 0); tzCounter != nil {
+		//count timezone associated with the hashtag, use the 0-th subcounter of buckets of hashtagCouter as Timezon counter
+		counter.GetSubCounter(hashtag, 0).Hit(timezone)
 
-	//count word associated with the hashtag, use the 1-th subcounter of buckets of hashtagCouter as Word counter
-	for _, word := range words[0:1] {
-		counter.GetSubCounter(hashtag, 1).Hit(word)
+		//count word associated with the hashtag, use the 1-th subcounter of buckets of hashtagCouter as Word counter
+		for _, word := range words[0:1] {
+			counter.GetSubCounter(hashtag, 1).Hit(word)
+		}
 	}
 	mutex.Unlock()
 }

@@ -27,7 +27,7 @@ func (mh *MHCounter) Hit(key string) {
 		if mh.isSuper {
 			bucket.subCounters = make([]Counter, numSubCounters)
 			for i := 0; i < numSubCounters; i++ {
-				bucket.subCounters[i] = NewMHCounter(size, false)
+				bucket.subCounters[i] = NewMHCounter(1000, false)
 			}
 		}
 		mh.buckets[key] = bucket

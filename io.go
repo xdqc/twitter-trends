@@ -92,7 +92,7 @@ func outputToCSV2(counter ss.Counter, outFile string) {
 	// Hashtag counter
 	writer.Write([]string{"Rank", "Hashtag", "Count", "Uniq_Timezones", "Unique_Words"})
 	mutex.Lock()
-	for i, elem := range counter.GetAll() {
+	for i, elem := range counter.GetAll()[:numTopHeavyHitterThatHasSubcounter] {
 		numUniqTZ := len(counter.GetSubCounter(elem.Key, 0).GetAll())
 		numUniqWord := len(counter.GetSubCounter(elem.Key, 1).GetAll())
 		values := []string{strconv.Itoa(i), elem.Key, strconv.FormatUint(elem.Count, 10), strconv.Itoa(numUniqTZ), strconv.Itoa(numUniqWord)}

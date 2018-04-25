@@ -5,15 +5,17 @@ import (
 )
 
 var (
-	//use 1000 or 10000 for the number of buckets of the counter
-	size int
+	// //use 1000 or 10000 for the number of buckets of the counter
+	// size int
 	//`2` indicates the two sub-counters for timezone and word associated with the hashtag, respectively
 	numSubCounters = 2
+
+	numTopHeavyHitterThatHasSubcounter = 1000
 )
 
 //NewSSCounter - initialise spacesaving counter
 func NewSSCounter(s int, isSuperCounter bool) *SSCounter {
-	size = s
+	size := s
 	ss := SSCounter{
 		list:    make([]*Element, size),
 		hash:    make(map[string]uint32, size),
@@ -40,7 +42,8 @@ func (ss *SSCounter) Hit(key string) {
 		bucket = ss.list[idx]
 
 		// only create subcounters for supercounter, and top 1000 heavy hitters
-		if ss.isSuper && bucket.subCounters == nil && int(idx) >= size-1000 {
+		if ss.isSuper && bucket.subCounters == nil && int(idx) >= len(ss.list)-numTopHeavyHitterThatHasSubcounter {
+			log.Println("Create subctrs for top#", len(ss.list)-int(idx), "heavy hitter", key)
 			bucket.subCounters = make([]Counter, numSubCounters)
 			for i := 0; i < numSubCounters; i++ {
 				bucket.subCounters[i] = NewSSCounter(1000, false)
@@ -50,17 +53,17 @@ func (ss *SSCounter) Hit(key string) {
 		// new element => replace the first element(lowest count) with new key
 		idx = 0
 		bucket = ss.list[idx]
-		delete(ss.hash, bucket.Key)
-		bucket.Key = key
-		ss.hash[key] = idx
-
 		// only create subcounters for supercounter, replace the old bucket
 		if ss.isSuper && bucket.subCounters != nil {
+			log.Println("create subcounters for new ", key, "to replace", bucket.Key, "with count", bucket.Count)
 			bucket.subCounters = make([]Counter, numSubCounters)
 			for i := 0; i < numSubCounters; i++ {
 				bucket.subCounters[i] = NewSSCounter(1000, false)
 			}
 		}
+		delete(ss.hash, bucket.Key)
+		bucket.Key = key
+		ss.hash[key] = idx
 	}
 
 	// increment count for the bucket
@@ -95,7 +98,10 @@ func (ss *SSCounter) GetSubCounter(key string, i int) (subCounter Counter) {
 	}
 	if elemIdx, found := ss.hash[key]; found {
 		elem := ss.list[elemIdx]
-		return elem.subCounters[i]
+		if len(elem.subCounters) > 0 {
+			return elem.subCounters[i]
+		}
+		return nil
 	}
 	log.Panicln("call for subcounter under no-exist supercounter's bucket")
 	return
