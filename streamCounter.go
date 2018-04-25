@@ -69,10 +69,10 @@ func RunStream(approach int, counterSize int, runTimeMinuts int, isChinese bool)
 			return
 
 		case <-sig:
-			log.Printf("Stream counter has been running for %.2f hours...\n", time.Now().Sub(start).Hours())
+			log.Printf("Stream counter has been running for %v\n", time.Since(start))
 
 			//output sketchy results to file when user press ctrl+t
-			filename := "stream_result/" + strings.Replace(time.Now().Format(time.RFC3339), ":", "", -1) + "_" + strconv.Itoa(int(time.Now().Sub(start).Minutes())) + "_T.csv"
+			filename := "stream_result/" + strings.Replace(time.Now().Format(time.RFC3339), ":", "", -1) + "_" + strconv.Itoa(int(time.Since(start).Minutes())) + "_T.csv"
 			if approach == 1 {
 				outputToCSV1(hstgCounter, timezoneHstgCounter, wordHstgCounter, filename)
 			} else if approach == 2 {

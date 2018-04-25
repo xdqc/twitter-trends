@@ -38,6 +38,14 @@ func (ss *SSCounter) Hit(key string) {
 	if idx, found = ss.hash[key]; found {
 		// exsisting element => increment count
 		bucket = ss.list[idx]
+
+		// only create subcounters for supercounter, and top 1000 heavy hitters
+		if ss.isSuper && bucket.subCounters == nil && int(idx) >= size-1000 {
+			bucket.subCounters = make([]Counter, numSubCounters)
+			for i := 0; i < numSubCounters; i++ {
+				bucket.subCounters[i] = NewSSCounter(1000, false)
+			}
+		}
 	} else {
 		// new element => replace the first element(lowest count) with new key
 		idx = 0
@@ -45,8 +53,9 @@ func (ss *SSCounter) Hit(key string) {
 		delete(ss.hash, bucket.Key)
 		bucket.Key = key
 		ss.hash[key] = idx
-		// only create subcounters for supercounter
-		if ss.isSuper {
+
+		// only create subcounters for supercounter, replace the old bucket
+		if ss.isSuper && bucket.subCounters != nil {
 			bucket.subCounters = make([]Counter, numSubCounters)
 			for i := 0; i < numSubCounters; i++ {
 				bucket.subCounters[i] = NewSSCounter(1000, false)
