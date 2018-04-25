@@ -92,42 +92,47 @@ func outputToCSV2(counter ss.Counter, outFile string) {
 	// Hashtag counter
 	writer.Write([]string{"Rank", "Hashtag", "Count", "Uniq_Timezones", "Unique_Words"})
 	mutex.Lock()
-	for i, elem := range counter.GetAll()[:numTopHeavyHitterThatHasSubcounter] {
-		numUniqTZ := len(counter.GetSubCounter(elem.Key, 0).GetAll())
-		numUniqWord := len(counter.GetSubCounter(elem.Key, 1).GetAll())
-		values := []string{strconv.Itoa(i), elem.Key, strconv.FormatUint(elem.Count, 10), strconv.Itoa(numUniqTZ), strconv.Itoa(numUniqWord)}
-		err := writer.Write(values)
-		if err != nil {
-			log.Panicln("Cannot write to file: " + err.Error())
+	for i, elem := range counter.GetAll() {
+		if counter.GetSubCounter(elem.Key, 0) != nil {
+			numUniqTZ := len(counter.GetSubCounter(elem.Key, 0).GetAll())
+			numUniqWord := len(counter.GetSubCounter(elem.Key, 1).GetAll())
+			values := []string{strconv.Itoa(i), elem.Key, strconv.FormatUint(elem.Count, 10), strconv.Itoa(numUniqTZ), strconv.Itoa(numUniqWord)}
+			err := writer.Write(values)
+			if err != nil {
+				log.Panicln("Cannot write to file: " + err.Error())
+			}
 		}
 	}
 	writer.Write([]string{})
 
 	// output timezone and words result for first 1000 hashtags
 	for i, hstg := range counter.GetAll() {
-		// TimeZone counter
-		writer.Write([]string{"HT_rank", "Hashtag", "TZ_Rank", "TimeZone", "Count"})
-		for j, tz := range counter.GetSubCounter(hstg.Key, 0).GetAll() {
-			values := []string{strconv.Itoa(i), hstg.Key, strconv.Itoa(j), tz.Key, strconv.FormatUint(tz.Count, 10)}
-			err := writer.Write(values)
-			if err != nil {
-				log.Panicln("Cannot write to file: " + err.Error())
-			}
-		}
-		writer.Write([]string{})
+		if counter.GetSubCounter(hstg.Key, 0) != nil {
 
-		// Word counter, only for count > 1
-		writer.Write([]string{"HT_rank", "Hashtag", "W_Rank", "Word", "Count"})
-		for k, wd := range counter.GetSubCounter(hstg.Key, 1).GetAll() {
-			if wd.Count > 1 {
-				values := []string{strconv.Itoa(i), hstg.Key, strconv.Itoa(k), wd.Key, strconv.FormatUint(wd.Count, 10)}
+			// TimeZone counter
+			writer.Write([]string{"HT_rank", "Hashtag", "TZ_Rank", "TimeZone", "Count"})
+			for j, tz := range counter.GetSubCounter(hstg.Key, 0).GetAll() {
+				values := []string{strconv.Itoa(i), hstg.Key, strconv.Itoa(j), tz.Key, strconv.FormatUint(tz.Count, 10)}
 				err := writer.Write(values)
 				if err != nil {
 					log.Panicln("Cannot write to file: " + err.Error())
 				}
 			}
+			writer.Write([]string{})
+
+			// Word counter, only for count > 1
+			writer.Write([]string{"HT_rank", "Hashtag", "W_Rank", "Word", "Count"})
+			for k, wd := range counter.GetSubCounter(hstg.Key, 1).GetAll() {
+				if wd.Count > 1 {
+					values := []string{strconv.Itoa(i), hstg.Key, strconv.Itoa(k), wd.Key, strconv.FormatUint(wd.Count, 10)}
+					err := writer.Write(values)
+					if err != nil {
+						log.Panicln("Cannot write to file: " + err.Error())
+					}
+				}
+			}
+			writer.Write([]string{})
 		}
-		writer.Write([]string{})
 	}
 	mutex.Unlock()
 }

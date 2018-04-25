@@ -114,6 +114,17 @@ func processTweetStream(t anaconda.Tweet, approach int, chinese bool, counters .
 			countPerHashtagAssociate(hashtag.Text, tz, words, counters[3])
 		}
 	}
+
+	// Also count tweets without hashtag as well
+	if len(hashtags) == 0 {
+		if approach == 1 {
+			//Approach1: count hashtag, hashtag&timezone, hashtag&word parallelly
+			countParallel(" ", tz, words, new(sync.WaitGroup), counters[0], counters[1], counters[2])
+		} else if approach == 2 {
+			//Approach2: count timezone and word under each hashtag
+			countPerHashtagAssociate(" ", tz, words, counters[3])
+		}
+	}
 }
 
 func afterTimer(stop *chan int, min int) {

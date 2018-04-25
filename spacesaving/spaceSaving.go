@@ -5,24 +5,25 @@ import (
 )
 
 var (
-	// //use 1000 or 10000 for the number of buckets of the counter
-	// size int
+	size int
 	//`2` indicates the two sub-counters for timezone and word associated with the hashtag, respectively
 	numSubCounters = 2
-
+	// only create subcounters for top N heavy hitters (save memory)
 	numTopHeavyHitterThatHasSubcounter = 1000
 )
 
 //NewSSCounter - initialise spacesaving counter
 func NewSSCounter(s int, isSuperCounter bool) *SSCounter {
-	size := s
+	if isSuperCounter {
+		size = s
+	}
 	ss := SSCounter{
-		list:    make([]*Element, size),
-		hash:    make(map[string]uint32, size),
+		list:    make([]*Element, s),
+		hash:    make(map[string]uint32, s),
 		isSuper: isSuperCounter,
 	}
 
-	for i := 0; i < size; i++ {
+	for i := 0; i < s; i++ {
 		ss.list[i] = &Element{}
 	}
 
@@ -41,21 +42,28 @@ func (ss *SSCounter) Hit(key string) {
 		// exsisting element => increment count
 		bucket = ss.list[idx]
 
-		// only create subcounters for supercounter, and top 1000 heavy hitters
+		// only create subcounters for top N heavy hitters
 		if ss.isSuper && bucket.subCounters == nil && int(idx) >= len(ss.list)-numTopHeavyHitterThatHasSubcounter {
 			log.Println("Create subctrs for top#", len(ss.list)-int(idx), "heavy hitter", key)
 			bucket.subCounters = make([]Counter, numSubCounters)
 			for i := 0; i < numSubCounters; i++ {
-				bucket.subCounters[i] = NewSSCounter(1000, false)
+				if bucket.Key == " " {
+					// Use same size subcounter as supercouter to count tweets with no hashtag
+					bucket.subCounters[i] = NewSSCounter(size, false)
+				} else {
+					// Use numTopHeavyHitterThatHasSubcounter sized subcounter
+					bucket.subCounters[i] = NewSSCounter(numTopHeavyHitterThatHasSubcounter, false)
+				}
 			}
 		}
 	} else {
 		// new element => replace the first element(lowest count) with new key
 		idx = 0
 		bucket = ss.list[idx]
-		// only create subcounters for supercounter, replace the old bucket
+		// create subcounters to replace the old ones in buckets whose key been overwritten
 		if ss.isSuper && bucket.subCounters != nil {
-			log.Println("create subcounters for new ", key, "to replace", bucket.Key, "with count", bucket.Count)
+			// counter 'full' indicator
+			log.Println("create subcounters for new", key, "to replace", bucket.Key, "with count", bucket.Count)
 			bucket.subCounters = make([]Counter, numSubCounters)
 			for i := 0; i < numSubCounters; i++ {
 				bucket.subCounters[i] = NewSSCounter(1000, false)

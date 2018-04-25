@@ -15,11 +15,10 @@ import (
 
 //Use mutex to solve concurrent map read and map write problem
 var (
-	mutex                              sync.Mutex
-	mutex2                             sync.Mutex
-	mutex3                             sync.Mutex
-	JB                                 *gojieba.Jieba
-	numTopHeavyHitterThatHasSubcounter = 1000
+	mutex  sync.Mutex
+	mutex2 sync.Mutex
+	mutex3 sync.Mutex
+	JB     *gojieba.Jieba
 )
 
 //Run - batch count for saved tweets
@@ -92,7 +91,17 @@ func processTweetFile(approach int, filename string, hstgCtr ss.Counter, tzCtr s
 				//Approach2: count timezone and word under each hashtag
 				countPerHashtagAssociate(hashtag.Text, tz, words, hashtagCounter)
 			}
+		}
 
+		// Also count tweets without hashtag as well
+		if len(hashtags) == 0 {
+			if approach == 1 {
+				//Approach1: count hashtag, hashtag&timezone, hashtag&word parallelly
+				countParallel(" ", tz, words, wg, hstgCtr, tzCtr, wdCtr)
+			} else if approach == 2 {
+				//Approach2: count timezone and word under each hashtag
+				countPerHashtagAssociate(" ", tz, words, hashtagCounter)
+			}
 		}
 	}
 }
