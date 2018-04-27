@@ -46,11 +46,13 @@ func (ss *SSCounter) Hit(key string) {
 		if ss.isSuper && bucket.subCounters == nil && int(idx) >= len(ss.list)-numTopHeavyHitterThatHasSubcounter {
 			log.Println("Create subctrs for top#", len(ss.list)-int(idx), "heavy hitter", key)
 			bucket.subCounters = make([]Counter, numSubCounters)
-			for i := 0; i < numSubCounters; i++ {
-				if bucket.Key == " " {
-					// Use same size subcounter as supercouter to count tweets with no hashtag
-					bucket.subCounters[i] = NewSSCounter(size, false)
-				} else {
+			if bucket.Key == " " {
+				// Use same size subcounter as supercouter to count tweets with no hashtag
+				bucket.subCounters[0] = NewSSCounter(1000, false)    //timezone
+				bucket.subCounters[1] = NewSSCounter(size*10, false) //word
+				log.Println("subcounter created for non-hashtag tweet.")
+			} else {
+				for i := 0; i < numSubCounters; i++ {
 					// Use numTopHeavyHitterThatHasSubcounter sized subcounter
 					bucket.subCounters[i] = NewSSCounter(numTopHeavyHitterThatHasSubcounter, false)
 				}

@@ -76,6 +76,7 @@ func outputToCSV1(hstgCtr ss.Counter, tzCtr ss.Counter, wdCtr ss.Counter, outFil
 	}
 	mutex3.Unlock()
 	writer.Write([]string{})
+	log.Println("results save to ", outFile)
 }
 
 //Approach2: Output the result to csv file
@@ -135,6 +136,7 @@ func outputToCSV2(counter ss.Counter, outFile string) {
 		}
 	}
 	mutex.Unlock()
+	log.Println("results save to ", outFile)
 }
 
 func writeTweetFile(t anaconda.Tweet, filepath string) {

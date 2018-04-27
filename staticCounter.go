@@ -139,18 +139,25 @@ func countPerHashtagAssociate(hashtag string, timezone string, words []string, c
 		however, prune to cause DEADLOCK, and very hard to debug.
 	Just put a big mutex locked block here, may be detrimental to efficiency though. */
 	mutex.Lock()
-
 	//count hashtags
 	counter.Hit(hashtag)
-
-	if tzCounter := counter.GetSubCounter(hashtag, 0); tzCounter != nil {
-		//count timezone associated with the hashtag, use the 0-th subcounter of buckets of hashtagCouter as Timezon counter
-		counter.GetSubCounter(hashtag, 0).Hit(timezone)
-
-		//count word associated with the hashtag, use the 1-th subcounter of buckets of hashtagCouter as Word counter
-		for _, word := range words[0:1] {
-			counter.GetSubCounter(hashtag, 1).Hit(word)
-		}
-	}
+	tzCounter := counter.GetSubCounter(hashtag, 0)
+	wdCounter := counter.GetSubCounter(hashtag, 1)
 	mutex.Unlock()
+
+	if tzCounter != nil {
+		mutex2.Lock()
+		//count timezone associated with the hashtag, use the 0-th subcounter of buckets of hashtagCouter as Timezon counter
+		tzCounter.Hit(timezone)
+		mutex2.Unlock()
+	}
+
+	if wdCounter != nil {
+		mutex3.Lock()
+		//count word associated with the hashtag, use the 1-th subcounter of buckets of hashtagCouter as Word counter
+		for _, word := range words {
+			wdCounter.Hit(word)
+		}
+		mutex3.Unlock()
+	}
 }
