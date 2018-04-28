@@ -48,8 +48,8 @@ func (ss *SSCounter) Hit(key string) {
 			bucket.subCounters = make([]Counter, numSubCounters)
 			if bucket.Key == " " {
 				// Use same size subcounter as supercouter to count tweets with no hashtag
-				bucket.subCounters[0] = NewSSCounter(1000, false)    //timezone
-				bucket.subCounters[1] = NewSSCounter(size*10, false) //word
+				bucket.subCounters[0] = NewSSCounter(1000, false)     //timezone
+				bucket.subCounters[1] = NewSSCounter(size*100, false) //word
 				log.Println("subcounter created for non-hashtag tweet.")
 			} else {
 				for i := 0; i < numSubCounters; i++ {

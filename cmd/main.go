@@ -14,7 +14,7 @@ var (
 	counterSize int
 	directory   string
 	output      string
-	chinese     int
+	language    string
 )
 
 func init() {
@@ -23,7 +23,7 @@ func init() {
 	flag.IntVar(&counterSize, "n", 0, "The size of space-saving counter; -n 0 to use memery-hungry counter instead")
 	flag.StringVar(&directory, "i", "", "The input *.json files directory. For static counter only.")
 	flag.StringVar(&output, "o", "result.csv", "The output filename for the result. For static counter only.")
-	flag.IntVar(&chinese, "c", 0, "-c 0 count all languages; -c 1 only count Chinese tweets, use *Jieba to segregate words, rather than space")
+	flag.StringVar(&language, "l", "", "-l count all languages; -l C only count Chinese tweets, -l J only count Japanese")
 	flag.Parse()
 }
 
@@ -35,15 +35,10 @@ func main() {
 		log.Fatalln("Wrong #Approach. -h for help")
 	}
 
-	onlyCountChinese := false
-	if chinese == 1 {
-		onlyCountChinese = true
-	}
-
 	if mode == 0 {
-		tweet.Run(approach, directory, counterSize, output, onlyCountChinese)
+		tweet.Run(approach, directory, counterSize, output, language)
 	} else if mode > 0 {
-		tweet.RunStream(approach, counterSize, mode, onlyCountChinese)
+		tweet.RunStream(approach, counterSize, mode, language)
 	}
 
 	log.Printf("Job done... Process time: %.2f s\n", time.Now().Sub(start).Seconds())

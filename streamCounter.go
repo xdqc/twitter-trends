@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -12,15 +13,22 @@ import (
 	"time"
 
 	"github.com/ChimeraCoder/anaconda"
+	"github.com/ikawaha/kagome/tokenizer"
 	"github.com/yanyiwu/gojieba"
 
 	ss "github.com/xdqc/dsm-assgn1-tweet/spacesaving"
 )
 
 //RunStream - Fetch tweets from api and count
-func RunStream(approach int, counterSize int, runTimeMinuts int, isChinese bool) {
-	if isChinese {
-		JB = gojieba.NewJieba()
+func RunStream(approach int, counterSize int, runTimeMinuts int, language string) {
+	JB = gojieba.NewJieba()
+	JT = tokenizer.New()
+	resep = regexp.MustCompile("[\n\\p{Z}]")              //tweet tex separator
+	repun = regexp.MustCompile("[\n .⠀“ˆ^`｀:،|!　\\p{P}]") //tweet punctuation
+	relang := regexp.MustCompile(`(\S{2})`)               //split language arg, every 2 runes
+	languages := make([]string, 0)
+	for _, lang := range relang.FindAllStringSubmatch(language, -1) {
+		languages = append(languages, lang[0])
 	}
 
 	// Start Twitter API
@@ -53,14 +61,27 @@ func RunStream(approach int, counterSize int, runTimeMinuts int, isChinese bool)
 				continue
 			}
 
-			go processTweetStream(tweet, approach, isChinese, hstgCounter, timezoneHstgCounter, wordHstgCounter, hashtagAssociateCounter)
+			if language != "" {
+				hasLang := false
+				for _, l := range languages {
+					if strings.Contains(tweet.Lang, l) {
+						hasLang = true
+						break
+					}
+				}
+				if !hasLang {
+					continue
+				}
+			}
+
+			go processTweetStream(tweet, approach, hstgCounter, timezoneHstgCounter, wordHstgCounter, hashtagAssociateCounter)
 
 		case <-stop:
 			stream.Stop()
 			log.Println("Time up")
 
 			//output results to file
-			filename := "stream_result/" + strings.Replace(time.Now().Format(time.RFC3339), ":", "", -1) + "_" + strconv.Itoa(runTimeMinuts) + ".csv"
+			filename := "stream_result/" + strings.Replace(time.Now().Format(time.RFC3339), ":", "", -1) + "_" + strconv.Itoa(runTimeMinuts) + language + ".csv"
 			if approach == 1 {
 				outputToCSV1(hstgCounter, timezoneHstgCounter, wordHstgCounter, filename)
 			} else if approach == 2 {
@@ -72,7 +93,7 @@ func RunStream(approach int, counterSize int, runTimeMinuts int, isChinese bool)
 			log.Printf("Stream counter has been running for %v\n", time.Since(start))
 
 			//output sketchy results to file when user press ctrl+t
-			filename := "stream_result/" + strings.Replace(time.Now().Format(time.RFC3339), ":", "", -1) + "_" + strconv.Itoa(int(time.Since(start).Minutes())) + "_T.csv"
+			filename := "stream_result/" + strings.Replace(time.Now().Format(time.Stamp), " ", "-", -1) + "_" + strconv.Itoa(int(time.Since(start).Minutes())) + language + "_T.csv"
 			if approach == 1 {
 				go outputToCSV1(hstgCounter, timezoneHstgCounter, wordHstgCounter, filename)
 			} else if approach == 2 {
@@ -84,7 +105,7 @@ func RunStream(approach int, counterSize int, runTimeMinuts int, isChinese bool)
 
 // Process a tweet in the stream.
 // The first three counters for approach #1, the last counter for approach #2
-func processTweetStream(t anaconda.Tweet, approach int, chinese bool, counters ...ss.Counter) {
+func processTweetStream(t anaconda.Tweet, approach int, counters ...ss.Counter) {
 
 	// // Only count tweet with content
 	// if len(t.Text) <= 2 {
@@ -95,14 +116,21 @@ func processTweetStream(t anaconda.Tweet, approach int, chinese bool, counters .
 	tz := t.User.TimeZone
 	words := make([]string, 0)
 
-	if chinese {
-		if strings.Index(t.Lang, "zh") < 0 && strings.Index(t.User.Lang, "zh") < 0 {
-			return
+	if t.Lang == "ja" {
+		tokens := JT.Tokenize(t.Text)
+		for _, token := range tokens {
+			words = append(words, repun.ReplaceAllString(token.Surface, ""))
 		}
-		useHMM := true
-		words = JB.Cut(t.Text, useHMM)
+	} else if strings.Index(t.Lang, "zh") >= 0 {
+		tokens := JB.Cut(t.Text, true)
+		for _, word := range tokens {
+			words = append(words, repun.ReplaceAllString(word, ""))
+		}
 	} else {
-		words = strings.Split(t.Text, " ")
+		tokens := resep.Split(t.Text, -1)
+		for _, word := range tokens {
+			words = append(words, repun.ReplaceAllString(word, ""))
+		}
 	}
 
 	for _, hashtag := range hashtags {

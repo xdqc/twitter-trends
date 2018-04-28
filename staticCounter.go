@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 	"sync"
 
+	"github.com/ikawaha/kagome/tokenizer"
 	"github.com/yanyiwu/gojieba"
 
 	ss "github.com/xdqc/dsm-assgn1-tweet/spacesaving"
@@ -19,13 +21,15 @@ var (
 	mutex2 sync.Mutex
 	mutex3 sync.Mutex
 	JB     *gojieba.Jieba
+	JT     tokenizer.Tokenizer
+	resep  *regexp.Regexp
+	repun  *regexp.Regexp
 )
 
 //Run - batch count for saved tweets
-func Run(approach int, dir string, counterSize int, outFile string, chinese bool) {
-	if chinese {
-		JB = gojieba.NewJieba()
-	}
+func Run(approach int, dir string, counterSize int, outFile string, language string) {
+	JB = gojieba.NewJieba()
+	JT = tokenizer.New()
 
 	/* Appproach 1 - count hashtag, hashtag&timezone, hashtag&word parallelly */
 	hstgCounter := ss.NewCounter(counterSize, false)
@@ -38,7 +42,7 @@ func Run(approach int, dir string, counterSize int, outFile string, chinese bool
 	var wg sync.WaitGroup
 	for _, file := range filesInDirectory(dir) {
 		//process tweet files concurrently
-		go processTweetFile(approach, file, hstgCounter, timeZoneHstgCounter, wordHstgCounter, hashtagAssociateCounter, chinese, &wg)
+		go processTweetFile(approach, file, hstgCounter, timeZoneHstgCounter, wordHstgCounter, hashtagAssociateCounter, language, &wg)
 	}
 	wg.Wait()
 
@@ -52,7 +56,7 @@ func Run(approach int, dir string, counterSize int, outFile string, chinese bool
 
 // Process a tweet file.
 // The first three counters args for approach #1, the last counter arg for approach #2
-func processTweetFile(approach int, filename string, hstgCtr ss.Counter, tzCtr ss.Counter, wdCtr ss.Counter, hashtagCounter ss.Counter, chinese bool, wg *sync.WaitGroup) {
+func processTweetFile(approach int, filename string, hstgCtr ss.Counter, tzCtr ss.Counter, wdCtr ss.Counter, hashtagCounter ss.Counter, language string, wg *sync.WaitGroup) {
 	wg.Add(1)
 	defer wg.Done()
 
@@ -72,16 +76,7 @@ func processTweetFile(approach int, filename string, hstgCtr ss.Counter, tzCtr s
 		tz := t.User.TimeZone
 		words := make([]string, 0)
 
-		if chinese {
-			if strings.Index(t.Lang, "zh") < 0 {
-				continue
-			} else {
-				useHMM := true
-				words = JB.Cut(t.Text, useHMM)
-			}
-		} else {
-			words = strings.Split(t.Text, " ")
-		}
+		words = strings.Split(t.Text, " ")
 
 		for _, hashtag := range hashtags {
 			if approach == 1 {
