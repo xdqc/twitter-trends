@@ -50,7 +50,7 @@ func RunStream(approach int, counterSize int, runTimeMinuts int, language string
 
 	//listen to system signal
 	sig := make(chan os.Signal)
-	signal.Notify(sig, syscall.SIGINFO) //CTRL+T
+	signal.Notify(sig, syscall.SIGINT) //CTRL+T
 
 	for {
 		select {
