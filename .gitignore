@@ -15,7 +15,8 @@
 /**/march18/
 /**/march19/
 /**/march20/
-*.csv
+/**/colleted_tweets/
+/**/tweets-model/
 *.json
 *.gz
 *.zip
