@@ -1,4 +1,4 @@
-word, today's frequency, log2((freq.today-freq.ystdy)/freq.ystdy)
+word, today's frequency, log2(freq.today/freq.ystdy)
 cup,0.0005670262215743464,1.7270869960935533
 uk,0.00023061358993747944,2.0472784407695186
 football,0.00018004043424943572,1.1391066887733563

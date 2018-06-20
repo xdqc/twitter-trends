@@ -1,4 +1,4 @@
-word, today's frequency, log2((freq.today-freq.ystdy)/freq.ystdy)
+word, today's frequency, log2(freq.today/freq.ystdy)
 ronaldo,0.0004381628108290564,4.387915445758438
 spain,0.00028416233025395745,2.250577277531355
 manafort,0.00026310243547445676,4.290974316383129

@@ -1,4 +1,4 @@
-word, today's frequency, log2((freq.today-freq.ystdy)/freq.ystdy)
+word, today's frequency, log2(freq.today/freq.ystdy)
 report,0.0005614256063070138,1.4300068200899703
 fbi,0.0004418058550316138,3.1269688297701164
 russia,0.0004145410000057602,1.0510286634715083

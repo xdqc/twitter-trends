@@ -1,4 +1,4 @@
-word, today's frequency, log2((freq.today-freq.ystdy)/freq.ystdy)
+word, today's frequency, log2(freq.today/freq.ystdy)
 happy,0.0019491419955385985,1.0099600381312837
 fathers,0.001592418821347202,2.344336870014199
 dad,0.0010075324655054647,1.4928470779737113

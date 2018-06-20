@@ -1,4 +1,4 @@
-word, today's frequency, log2((freq.today-freq.ystdy)/freq.ystdy)
+word, today's frequency, log2(freq.today/freq.ystdy)
 x,0.001057861591195311,2.205242600958063
 death,0.0007035152359613296,2.3714713578106372
 xxxtentacion,0.0005726286804336404,8.445177026860723

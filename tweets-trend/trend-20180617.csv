@@ -1,4 +1,4 @@
-word, today's frequency, log2((freq.today-freq.ystdy)/freq.ystdy)
+word, today's frequency, log2(freq.today/freq.ystdy)
 fathers,0.0003135751106597145,1.6005995164297797
 nigeria,0.00027701377801484076,2.0512622472777124
 jay,0.000209050073773143,2.44228443122572
