@@ -46,8 +46,6 @@ for file in os.listdir(directory):
                     print(sentences[i+1])
                 sentences[i] = ''
 
-        outfile = str(file).split('.')[0] + '-model.csv'
-
         sentences = [x for x in sentences if x]
         print(file, 'distinct unique sentences:',len(sentences))
         words = []
@@ -62,7 +60,8 @@ for file in os.listdir(directory):
         print(file, 'unique words', len(freq))
         freq = sorted(freq.items(), key=operator.itemgetter(1), reverse=True)
 
-        with open(outfile, 'a') as w:
-            for item in freq:
-                w.write(item[0]+','+str(item[1]/totalnumberofwords)+'\n')
+        outfile = str(file).split('.')[0] + '-model.csv'
+        with open(outfile, 'w') as f:
+            [f.write('{0},{1}\n'.format(item[0], item[1]/totalnumberofwords)) for item in freq]
+
 
