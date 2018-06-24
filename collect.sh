@@ -1,6 +1,6 @@
 #!/bin/bash
 
-directory="."
+directory="./collected_tweets"
 if [ ! -z "$1" ]
 then
     directory=$1
