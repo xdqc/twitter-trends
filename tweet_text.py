@@ -60,7 +60,7 @@ for file in os.listdir(directory):
         print(file, 'unique words', len(freq))
         freq = sorted(freq.items(), key=operator.itemgetter(1), reverse=True)
 
-        outfile = 'tweets-model/'+str(file).split('.')[0] + '-model.csv'
+        outfile = 'tweets-model/' + file.split('.')[0] + '-model.csv'
         with open(outfile, 'w') as f:
             [f.write('{0},{1}\n'.format(item[0], item[1]/totalnumberofwords)) for item in freq]
 
