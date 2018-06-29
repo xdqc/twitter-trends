@@ -40,10 +40,10 @@ for file in os.listdir(directory):
             pluses = len(re.findall(r'[+]', diffstr))
             minues = len(re.findall(r'[-]', diffstr))
             if minues/len(sentences[i]) < 0.15:
-                if  minues/len(sentences[i]) > 0.14:
-                    print('+',pluses,'\t-', minues, '\tl', len(sentences[i]))
-                    print(sentences[i])
-                    print(sentences[i+1])
+                # if  minues/len(sentences[i]) > 0.14:
+                #     print('+',pluses,'\t-', minues, '\tl', len(sentences[i]))
+                #     print(sentences[i])
+                #     print(sentences[i+1])
                 sentences[i] = ''
 
         sentences = [x for x in sentences if x]
