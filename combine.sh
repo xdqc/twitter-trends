@@ -19,3 +19,4 @@ done
 
 python tweet_text.py
 python trend_words.py
+python word_cloud.py ./tweets-trend/trend-$((${today}-1)).csv
