@@ -25,7 +25,7 @@ for i in range(len(days)-1):
         tokens = [t for t in f.readlines() if t]
         for token in tokens:
             word, prob = token.split(',')[0], float(token.split(',')[1])
-            if prob > 2e-5:
+            if prob > 1e-5:
                 currModel[word] = prob
 
     for token in currModel.keys():
