@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/ChimeraCoder/anaconda"
-	"github.com/ikawaha/kagome/tokenizer"
 	"github.com/yanyiwu/gojieba"
 
 	ss "github.com/xdqc/dsm-assgn1-tweet/spacesaving"
@@ -22,7 +21,6 @@ import (
 //RunStream - Fetch tweets from api and count
 func RunStream(approach int, counterSize int, runTimeMinuts int, language string) {
 	JB = gojieba.NewJieba()
-	JT = tokenizer.New()
 	resep = regexp.MustCompile("[\n\\p{Z}]")              //tweet tex separator
 	repun = regexp.MustCompile("[\n .⠀“ˆ^`｀:،|!　\\p{P}]") //tweet punctuation
 	relang := regexp.MustCompile(`(\S{2})`)               //split language arg, every 2 runes
@@ -116,12 +114,7 @@ func processTweetStream(t anaconda.Tweet, approach int, counters ...ss.Counter) 
 	tz := t.User.TimeZone
 	words := make([]string, 0)
 
-	if t.Lang == "ja" {
-		tokens := JT.Tokenize(t.Text)
-		for _, token := range tokens {
-			words = append(words, repun.ReplaceAllString(token.Surface, ""))
-		}
-	} else if strings.Index(t.Lang, "zh") >= 0 {
+	if strings.Index(t.Lang, "zh") >= 0 {
 		tokens := JB.Cut(t.Text, true)
 		for _, word := range tokens {
 			words = append(words, repun.ReplaceAllString(word, ""))

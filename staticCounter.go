@@ -9,7 +9,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ikawaha/kagome/tokenizer"
 	"github.com/yanyiwu/gojieba"
 
 	ss "github.com/xdqc/dsm-assgn1-tweet/spacesaving"
@@ -21,7 +20,6 @@ var (
 	mutex2 sync.Mutex
 	mutex3 sync.Mutex
 	JB     *gojieba.Jieba
-	JT     tokenizer.Tokenizer
 	resep  *regexp.Regexp
 	repun  *regexp.Regexp
 )
@@ -29,7 +27,6 @@ var (
 //Run - batch count for saved tweets
 func Run(approach int, dir string, counterSize int, outFile string, language string) {
 	JB = gojieba.NewJieba()
-	JT = tokenizer.New()
 
 	/* Appproach 1 - count hashtag, hashtag&timezone, hashtag&word parallelly */
 	hstgCounter := ss.NewCounter(counterSize, false)
