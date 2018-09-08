@@ -15,13 +15,14 @@ for file in os.listdir(directory):
             for tweet in tweets:
                 numTweet += 1
                 hashtag = re.findall(r'"text": "([^"]+)", "indices"', tweet)
-                text = re.findall(r'"text":"([^"]+)", "hashtags"', tweet)[0]
+                text = re.findall(r'"text":"([^"]*)", "hashtags"', tweet)[0]
                 hashtags = []
                 if hashtag:
                     numTweetHashtag += 1
                     hashtags.extend(h.upper() for h in hashtag if h.find('\\')<0)   # ignore non-alphabetic hashtag
-                if text:
-                    text = text.strip()
+
+                text = text.strip()
+                if len(text)>10:
                     text = ' '.join(hashtags) + ' ' + text[0].lower() + text[1:]
                     sentences.append(text)
 
