@@ -15,16 +15,17 @@ for file in os.listdir(directory):
             for tweet in tweets:
                 numTweet += 1
                 hashtag = re.findall(r'"text": "([^"]+)", "indices"', tweet)
-                text = re.findall(r'"text":"([^"]*)", "hashtags"', tweet)[0]
                 hashtags = []
                 if hashtag:
                     numTweetHashtag += 1
                     hashtags.extend(h.upper() for h in hashtag if h.find('\\')<0)   # ignore non-alphabetic hashtag
 
-                text = text.strip()
-                if len(text)>10:
-                    text = ' '.join(hashtags) + ' ' + text[0].lower() + text[1:]
-                    sentences.append(text)
+                textPossible = re.findall(r'"text":"([^"]*)", "hashtags"', tweet)
+                if textPossible:
+                    text = textPossible[0].strip()
+                    if len(text)>10:
+                        text = ' '.join(hashtags) + ' ' + text[0].lower() + text[1:]
+                        sentences.append(text)
 
         print(file,'total tweets:',numTweet, '; tweets with hashtag:', numTweetHashtag, numTweetHashtag/numTweet)
         print(file,'total sentences:', len(sentences), '; unique sentences:', len(set(sentences)))

@@ -5,7 +5,7 @@ directory = './tweets-model/' if len(sys.argv)<2 else sys.argv[1]
 
 days = []
 
-for file in os.listdir(directory):
+for file in sorted(os.listdir(directory)):
     if file.endswith('.csv'):
         days.append(file)
 
@@ -40,4 +40,4 @@ for i in range(len(days)-1):
         f.write('word, today\'s frequency, log2(freq.today/freq.ystdy)\n')
         [f.write('{0},{1},{2}\n'.format(key, value[0], value[1])) for key, value in hotWords.items()]
 
-    print(days[i+1], len(hotWords))
+    print(days[i+1], len(hotWords), days)
