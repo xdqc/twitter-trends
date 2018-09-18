@@ -7,17 +7,13 @@ fi
 
 combine() {
     today=$(date +%Y%m%d)
-    yesterday=$(date -d 'yesterday' '+%Y%m%d')
+    yesterday=$(date -v -1d '+%Y%m%d')
 
-    for file in ${directory}/*; do
-        prev=`echo $file | sed 's/.*-\([0-9]\{8\}\)-.*/\1/g'`
-        echo $prev
-        if [ "$prev" -lt "$today" ];then
-            comb=`echo $file | sed 's/\(-[0-9]\{8\}\).*/\1/g'`
-            cat $comb* >> $comb.json
-            rm -f $comb-*
-        fi
-    done
+    count=`ls -1 ${directory}/tweets-${yesterday}-* 2>/dev/null | wc -l`
+    if [ $count != 0 ];then 
+        cat ${directory}/tweets-${yesterday}-* > ${directory}/tweets-${yesterday}.json
+        rm -f ${directory}/tweets-${yesterday}-*
+    fi 
 
     python tweet_text.py
     python trend_words.py

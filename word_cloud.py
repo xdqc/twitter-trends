@@ -10,7 +10,7 @@ def generate_word_cloud(file):
     with open(file, 'r', encoding='utf-8') as r:
         for line in r.readlines():
             if '.' in line.split(',')[1]:
-                word, count = line.split(',')[0].capitalize(), int(math.sqrt(float(line.split(',')[1])*1e5*float(line.split(',')[2])))
+                word, count = line.split(',')[0].capitalize(), int((float(line.split(',')[1])*1e5*float(line.split(',')[2])))
                 if len(word) > 1:
                     words.extend([word]*count)
     shuffle(words)
