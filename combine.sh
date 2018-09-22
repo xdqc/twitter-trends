@@ -19,7 +19,7 @@ combine() {
     python trend_words.py
     python word_cloud.py ./tweets-trend/trend-${yesterday}.csv
 
-    sed -i -E "s/\([0-9]\{8\}\)/${yesterday}/g" readme.md
+    sed -i "" "s/\([0-9]\{8\}\)/${yesterday}/g" readme.md
 
     git add ./tweets-trend/trend-${yesterday}.csv
     git add ./word-cloud/trend-${yesterday}.png
