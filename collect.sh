@@ -8,6 +8,6 @@ fi
 
 for (( i = 1 ; ; i++)) ; do 
     fileName=${directory}/tweets-$(date +%Y%m%d-%H%M).json
-    python just_tweets.py > $fileName
+    python just_full_tweets.py > $fileName
     # gzip -9 $fileName &
 done
