@@ -1,8 +1,8 @@
 ## What’s hot on twitter right now?
 
-![trend-20181115][wordcloud]
+![trend-20181116][wordcloud]
 
-[wordcloud]: https://raw.githubusercontent.com/xdqc/tweet-trend-everyday/master/word-cloud/trend-20181115.png "trend-20181115"
+[wordcloud]: https://raw.githubusercontent.com/xdqc/tweet-trend-everyday/master/word-cloud/trend-20181116.png "trend-20181116"
 
 ## Text mining procedures:
 
