@@ -16,7 +16,7 @@ currModel = {}
 hotWords = {}
 
 # Use 7 day's ago as prev
-prevIndex = len(days) if len(days) <= 7 else 7
+prevIndex = len(days)-1 if len(days) <= 7 else 7
 with open(directory+days[prevIndex], 'r') as f:
     tokens = [t for t in f.readlines() if t]
     for token in tokens:
