@@ -4,7 +4,7 @@
 
 [wordcloud]: https://raw.githubusercontent.com/xdqc/tweet-trend-everyday/master/word-cloud/trend-20190404.png "trend-20190404"
 
-## [Check old trends](https://github.com/xdqc/tweet-trend-everyday/tree/master/word-cloud)
+## [Check trends on old days ...](https://github.com/xdqc/tweet-trend-everyday/tree/master/word-cloud)
 
 ## Text mining procedures:
 
