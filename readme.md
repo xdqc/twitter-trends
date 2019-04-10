@@ -4,6 +4,8 @@
 
 [wordcloud]: https://raw.githubusercontent.com/xdqc/tweet-trend-everyday/master/word-cloud/trend-20190404.png "trend-20190404"
 
+## [Check old trends](/word-cloud/)
+
 ## Text mining procedures:
 
 1. **Fetch** raw tweet objects via twitter API (English tweets only).
