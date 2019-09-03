@@ -17,6 +17,7 @@
 /**/march20/
 /**/colleted_tweets/
 /**/tweets-model/
+/**/tweets-model-bigram/
 *.json
 *.gz
 *.zip
