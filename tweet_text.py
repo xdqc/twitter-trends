@@ -79,6 +79,6 @@ for file in os.listdir(directory):
         freq = sorted(freq.items(), key=operator.itemgetter(1), reverse=True)
         outfile = 'tweets-model-bigram/' + file.split('.')[0] + '-bigramodel-'+ str(numberofbigrams) + '.csv'
         with open(outfile, 'w') as f:
-            [f.write('{0},{1},{2}\n'.format(item[0][0], item[0][1], item[1]/numberofbigrams)) for item in freq if item[1] > 1]
+            [f.write('{0} {1},{2}\n'.format(item[0][0], item[0][1], item[1]/numberofbigrams)) for item in freq if item[1] > 1]
 
 
