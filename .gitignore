@@ -18,6 +18,8 @@
 /**/colleted_tweets/
 /**/tweets-model/
 /**/tweets-model-bigram/
+/**/tweets-trend/
+/**/tweets-trend-bigram/
 *.json
 *.gz
 *.zip
