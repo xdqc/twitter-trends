@@ -7,7 +7,7 @@ fi
 
 combine() {
     today=$(date +%Y%m%d)
-    yesterday=20190826 #$(date -v -1d '+%Y%m%d')
+    yesterday=20190827 #$(date -v -1d '+%Y%m%d')
 
     count=`ls -1 ${directory}/tweets-${yesterday}-* 2>/dev/null | wc -l`
     if [ $count != 0 ];then 
@@ -21,7 +21,7 @@ combine() {
 
     sed -i -e "s/\([0-9]\{8\}\)/${yesterday}/g" readme.md
 
-    git add ./tweets-trend/trend-${yesterday}.csv
+    # git add ./tweets-trend/trend-${yesterday}.csv
     git add ./word-cloud/trend-${yesterday}.png
     git add ./readme.md
     git commit -m trend-${yesterday}
