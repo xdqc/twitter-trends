@@ -53,19 +53,32 @@ for file in os.listdir(directory):
 
         print(file, 'distinct unique sentences:',len(sentences))
         words = []
+        bigrams = []
 
         # count all words in tweet text
         for text in sentences:
-            words.extend(w.strip('\'').lower() for w in re.findall(r'[\da-zA-Z\']+', text) if w.replace('\'',''))
+            unigrams = [w.strip('\'').lower() for w in re.findall(r'[\da-zA-Z\']+', text) if w.replace('\'','')]
+            words.extend(unigrams)
+            bigrams.extend([b for b in zip(unigrams[:-1], unigrams[1:])])
 
+        # build unigram 
         totalnumberofwords = len(words)
         print(file, 'total number of words:', totalnumberofwords)
         freq = Counter(words)
         print(file, 'unique words', len(freq))
         freq = sorted(freq.items(), key=operator.itemgetter(1), reverse=True)
 
-        outfile = 'tweets-model/' + file.split('.')[0] + '-model-'+ str(totalnumberofwords) +'.csv'
+        outfile = 'tweets-model/' + file.split('.')[0] + '-model-'+ str(totalnumberofwords) + '.csv'
         with open(outfile, 'w') as f:
             [f.write('{0},{1}\n'.format(item[0], item[1]/totalnumberofwords)) for item in freq]
+        
+        # build bigram freq model
+        numberofbigrams = len(bigrams)
+        freq = Counter(bigrams)
+        print(file, 'unique bigrams', len(freq))
+        freq = sorted(freq.items(), key=operator.itemgetter(1), reverse=True)
+        outfile = 'tweets-model-bigram/' + file.split('.')[0] + '-bigramodel-'+ str(numberofbigrams) + '.csv'
+        with open(outfile, 'w') as f:
+            [f.write('{0},{1},{2}\n'.format(item[0][0], item[0][1], item[1]/numberofbigrams)) for item in freq if item[1] > 1]
 
 
