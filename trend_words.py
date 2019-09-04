@@ -42,7 +42,8 @@ def process_trend(directory):
             hotWords[token] = (currModel[token], 0)
 
 
-    with open('tweets-trend-bigram/trend-'+days[0].split('-')[1]+'.csv', 'w') as f:
+    outdir = './tweets-trend/' if directory == './tweets-model/' else './tweets-trend-bigram/'
+    with open(outdir+'trend-'+days[0].split('-')[1]+'.csv', 'w') as f:
         f.write('word, today\'s frequency, log2(freq.today/freq.ystdy)\n')
         [f.write('{0},{1},{2}\n'.format(key, value[0], value[1])) for key, value in hotWords.items()]
 
