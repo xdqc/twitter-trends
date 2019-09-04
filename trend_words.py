@@ -16,7 +16,6 @@ def process_trend(directory):
     prevModel = {}
     currModel = {}
     hotWords = {}
-    print(days)
 
     # Use 7 day's ago as prev
     prevIndex = len(days)-1 if len(days) <= 7 else 7

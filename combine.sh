@@ -7,7 +7,7 @@ fi
 
 combine() {
     today=$(date +%Y%m%d)
-    yesterday=20190731 #$(date -v -1d '+%Y%m%d')
+    yesterday=20190826 #$(date -v -1d '+%Y%m%d')
 
     count=`ls -1 ${directory}/tweets-${yesterday}-* 2>/dev/null | wc -l`
     if [ $count != 0 ];then 
@@ -17,7 +17,7 @@ combine() {
 
     python tweet_text.py
     python trend_words.py
-    python word_cloud.py ./tweets-trend/trend-${yesterday}.csv
+    python word_cloud.py ./tweets-trend-bigram/trend-${yesterday}.csv
 
     sed -i -e "s/\([0-9]\{8\}\)/${yesterday}/g" readme.md
 
@@ -32,7 +32,7 @@ combine() {
 
 # do combo task once on 1:00~1:59am each day
 while true; do
-    if [ $(date +%H) -eq 18 ]; then
+    if [ $(date +%H) -eq 17 ]; then
         combine
     fi
     sleep 3598
