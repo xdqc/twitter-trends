@@ -17,13 +17,24 @@ def process_trend(directory):
     currModel = {}
     hotWords = {}
 
-    # Use 7 day's ago as prev
-    prevIndex = len(days)-1 if len(days) <= 5 else 5
-    with open(directory+days[prevIndex], 'r') as f:
-        tokens = [t for t in f.readlines() if t]
-        for token in tokens:
-            word, prob = token.split(',')[0], float(token.split(',')[1])
-            prevModel[word] = prob
+    # Use 7 day's summary model as prev
+    prevIndex = len(days)-1 if len(days) <= 7 else 7
+    prevWords = {}
+    total_words = 0
+    for day in days[1:prevIndex]:
+        with open(directory+day, 'r') as f:
+            daily_words = int(day.split('-')[-1].split('.')[0])
+            total_words += daily_words
+            tokens = [t for t in f.readlines() if t]
+            for token in tokens:
+                word, prob = token.split(',')[0], float(token.split(',')[1])
+                if word in prevWords:
+                    prevWords[word] += prob * daily_words
+                else:
+                    prevWords[word] = prob * daily_words
+    for word in prevWords:
+        prevModel[word] = prevWords[word] / total_words
+    
 
     with open(directory+days[0], 'r') as f:
         tokens = [t for t in f.readlines() if t]

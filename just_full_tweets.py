@@ -10,7 +10,7 @@ from twitter import OAuth, TwitterStream
 
 with open("config.yml", 'r') as stream:
     try:
-        c = yaml.load(stream)
+        c = yaml.load(stream, Loader=yaml.FullLoader)
         oauth = OAuth(c['Access_Key'], c['Access_Secret'],
                       c['API_Key'], c['API_Secret'])
     except yaml.YAMLError as exc:
