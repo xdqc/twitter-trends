@@ -1,0 +1,31 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# data
+/**/march18/
+/**/march19/
+/**/march20/
+/**/colleted_tweets/
+/**/tweets-model/
+/**/tweets-model-bigram/
+/**/tweets-trend/
+/**/tweets-trend-bigram/
+*.json
+*.gz
+*.zip
+
+#config
+*.yml
+
+/.vscode/
+readme.md-e
