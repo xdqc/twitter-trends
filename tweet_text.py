@@ -52,19 +52,19 @@ for file in os.listdir(directory):
         sentences = [x for x in sentences if x]
 
         print(file, 'distinct unique sentences:',len(sentences))
-        words = []
+        unigrams = []
         bigrams = []
 
         # count all words in tweet text
         for text in sentences:
-            unigrams = [w.strip('\'').lower() for w in re.findall(r'[\da-zA-Z\']+', text) if w.replace('\'','')]
-            words.extend(unigrams)
-            bigrams.extend([b for b in zip(unigrams[:-1], unigrams[1:])])
+            words_in_a_tweet = [w.strip('\'').lower() for w in re.findall(r'[\da-zA-Z\']+', text) if w.replace('\'','')]
+            unigrams.extend(words_in_a_tweet)
+            bigrams.extend([b for b in zip(words_in_a_tweet[:-1], words_in_a_tweet[1:])])
 
         # build unigram 
-        totalnumberofwords = len(words)
+        totalnumberofwords = len(unigrams)
         print(file, 'total number of words:', totalnumberofwords)
-        freq = Counter(words)
+        freq = Counter(unigrams)
         print(file, 'unique words', len(freq))
         freq = sorted(freq.items(), key=operator.itemgetter(1), reverse=True)
 
