@@ -4,7 +4,11 @@ from collections import Counter
 directory = './tweets-model/'
 directory_bigram = './tweets-model-bigram/'
 
-
+"""
+Create trend of the day by comparing the model of the day with the previous days models:
+1) The frequency should > 1e-5
+2) The frequency should at least doubled than previous models
+"""
 def process_trend(directory):
     days = []
 
