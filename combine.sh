@@ -7,7 +7,7 @@ fi
 
 combine() {
     today=$(date +%Y%m%d)
-    yesterday=20191015 #$(date -v -1d '+%Y%m%d')
+    yesterday=20200430 #$(date -v -1d '+%Y%m%d')
 
     count=`ls -1 ${directory}/tweets-${yesterday}-* 2>/dev/null | wc -l`
     if [ $count != 0 ];then 
@@ -32,7 +32,7 @@ combine() {
 
 # do combo task once on 1:00~1:59am each day
 while true; do
-    if [ $(date +%H) -eq 16 ]; then
+    if [ $(date +%H) -eq 0 ]; then
         combine
     fi
     sleep 3598
