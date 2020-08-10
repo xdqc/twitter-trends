@@ -21,8 +21,8 @@ def process_trend(directory):
     currModel = {}
     hotWords = {}
 
-    # Use 7 day's summary model as prev
-    prevIndex = len(days)-1 if len(days) <= 7 else 7
+    # Use 14 day's summary model as prev
+    prevIndex = len(days)-1 if len(days) <= 14 else 14
     prevWords = {}
     total_words = 0
     for day in days[1:prevIndex]:
