@@ -1,8 +1,8 @@
 ## What’s hot on twitter right now?
 
-![trend-20200721][wordcloud]
+![trend-20200722][wordcloud]
 
-[wordcloud]: https://raw.githubusercontent.com/xdqc/tweet-trend-everyday/master/word-cloud/trend-20200721.png?token=AF5V4P7ADR6KQBZ4CEDTNIK6AXRMU "trend-20200721"
+[wordcloud]: https://raw.githubusercontent.com/xdqc/tweet-trend-everyday/master/word-cloud/trend-20200722.png?token=AF5V4P7ADR6KQBZ4CEDTNIK6AXRMU "trend-20200722"
 
 ## [Check trends on old days ...](https://github.com/xdqc/tweet-trend-everyday/tree/master/word-cloud)
 
