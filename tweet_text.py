@@ -31,7 +31,7 @@ def get_sentences(file):
     print(file,'total sentences:', len(sentences), '; unique sentences:', len(set(sentences)))
 
     freq = Counter(sentences)
-    freq = sorted(freq.items(), key=lambda x: (x[0],len(x[0])), reverse=False)
+    freq = sorted(freq.items(), key=lambda x: (x[0],len(x[0])), reverse=False) # sort alphabetic then length
 
     sentences = [x[0] for x in freq]
 
