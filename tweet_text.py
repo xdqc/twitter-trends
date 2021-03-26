@@ -23,7 +23,7 @@ def get_sentences(file):
             textPossible = re.findall(r'"text":"([^"]*)", "hashtags"', tweet)
             if textPossible:
                 text = textPossible[0].strip()
-                if len(text)>10:
+                if len(text)>25 or len(text.split())>5:
                     text = ' '.join(hashtags) + ' ' + text[0].lower() + text[1:]
                     sentences.append(text)
 
