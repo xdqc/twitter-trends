@@ -65,7 +65,8 @@ for file in os.listdir(directory):
         for text in sentences:
             words_in_a_tweet = [w.strip('\'').lower() for w in re.findall(r'[\da-zA-Z\']+', text) if w.replace('\'','')]
             unigrams.extend(words_in_a_tweet)
-            bigrams.extend([b for b in zip(words_in_a_tweet[:-1], words_in_a_tweet[1:])])
+            bigrams_in_a_tweet = set([b for b in zip(words_in_a_tweet[:-1], words_in_a_tweet[1:])])
+            bigrams.extend(bigrams_in_a_tweet)
 
         # build unigram 
         totalnumberofwords = len(unigrams)
