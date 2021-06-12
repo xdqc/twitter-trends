@@ -30,6 +30,7 @@ def generate_word_cloud(file):
     wc.to_file('./word-cloud/'+file.split('/')[-1].split('.')[0]+'.png')
 
 def generate_mask_image(text):
+    # filename text is like `trend-yyyymmdd.png`
     text = text.split('-')[-1].split('.')[0][2:]
     text = text[4:]+text[2:4]+text[:2]
     img = Image.new('RGB', (1280, 360), color = (255, 255, 255))
