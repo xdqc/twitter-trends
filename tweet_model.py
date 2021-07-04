@@ -54,38 +54,36 @@ def get_sentences(file):
     return sentences
 
 
-for file in os.listdir(directory):
-    if len(file) - len(file.replace('-','')) == 1:
-        sentences = get_sentences(file)
-
-        unigrams = []
-        bigrams = []
-
-        # count all words in tweet text
-        for text in sentences:
-            words_in_a_tweet = [w.strip('\'').lower() for w in re.findall(r'[\da-zA-Z\']+', text) if w.replace('\'','')]
-            unigrams.extend(words_in_a_tweet)
-            bigrams_in_a_tweet = set([b for b in zip(words_in_a_tweet[:-1], words_in_a_tweet[1:])])
-            bigrams.extend(bigrams_in_a_tweet)
-
-        # build unigram 
-        totalnumberofwords = len(unigrams)
-        print(file, 'total number of words:', totalnumberofwords)
-        freq = Counter(unigrams)
-        print(file, 'unique words', len(freq))
-        freq = sorted(freq.items(), key=operator.itemgetter(1), reverse=True)
-
-        outfile = 'tweets-model/' + file.split('.')[0] + '-model-'+ str(totalnumberofwords) + '.csv'
+def build_model(file, tokens, gramliteral):
+    numtokens = len(tokens)
+    print(file, 'number', gramliteral, numtokens)
+    freq = Counter(tokens)
+    print(file, 'unique', gramliteral, len(freq))
+    freq = sorted(freq.items(), key=operator.itemgetter(1), reverse=True)
+    if gramliteral == 'unigrams':
+        outfile = 'tweets-model/' + file.split('.')[0] + '-model-'+ str(numtokens) + '.csv'
         with open(outfile, 'w') as f:
-            [f.write('{0},{1}\n'.format(item[0], item[1]/totalnumberofwords)) for item in freq]
-        
-        # build bigram freq model
-        numberofbigrams = len(bigrams)
-        freq = Counter(bigrams)
-        print(file, 'unique bigrams', len(freq))
-        freq = sorted(freq.items(), key=operator.itemgetter(1), reverse=True)
-        outfile = 'tweets-model-bigram/' + file.split('.')[0] + '-bigramodel-'+ str(numberofbigrams) + '.csv'
+            [f.write('{0},{1}\n'.format(item[0], item[1]/numtokens)) for item in freq]
+    if gramliteral == 'bigrams':
+        outfile = 'tweets-model-bigram/' + file.split('.')[0] + '-bigramodel-'+ str(numtokens) + '.csv'
         with open(outfile, 'w') as f:
-            [f.write('{0} {1},{2}\n'.format(item[0][0], item[0][1], item[1]/numberofbigrams)) for item in freq if item[1] > 1]
+            [f.write('{0} {1},{2}\n'.format(item[0][0], item[0][1], item[1]/numtokens)) for item in freq if item[1] > 1]
+
+def build_models():
+    for file in os.listdir(directory):
+        # only process on concatenated json
+        if len(file) - len(file.replace('-','')) == 1:
+            sentences = get_sentences(file)
+            unigrams, bigrams = [], []
+            # count all words in tweet text
+            for text in sentences:
+                words_in_a_tweet = [w.strip('\'').lower() for w in re.findall(r'[\da-zA-Z\']+', text) if w.replace('\'','')]
+                unigrams.extend(words_in_a_tweet)
+                bigrams_in_a_tweet = set([b for b in zip(words_in_a_tweet[:-1], words_in_a_tweet[1:])])
+                bigrams.extend(bigrams_in_a_tweet)
+            # build models 
+            build_model(file, unigrams, 'unigrams')
+            build_model(file, bigrams, 'bigrams')
 
 
+build_models()

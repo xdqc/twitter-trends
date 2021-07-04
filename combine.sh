@@ -15,7 +15,7 @@ combine() {
         rm -f ${directory}/tweets-${yesterday}-*
     fi 
 
-    python3 tweet_text.py
+    python3 tweet_model.py
     python3 trend_words.py
     python3 word_cloud.py ./tweets-trend-bigram/trend-${yesterday}.csv
 
@@ -32,7 +32,7 @@ combine() {
 
 # do combo task once on 1:00~1:59am each day
 while true; do
-    if [ $(date +%H) -eq 18 ]; then
+    if [ $(date +%H) -eq 19 ]; then
         combine
     fi
     sleep 3598
