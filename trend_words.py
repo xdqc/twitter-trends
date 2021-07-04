@@ -20,7 +20,8 @@ def make_prev_model(directory, days):
             total_words_len += daily_words_len
             for token in f.readlines():
                 if token:
-                    word, prob = token.split(',')[0], float(token.split(',')[1])
+                    sptoken = token.split(',')
+                    word, prob = sptoken[0], float(sptoken[1])
                     if word in prev_words:
                         prev_words[word] += prob * daily_words_len
                     else:
@@ -35,7 +36,8 @@ def make_curr_model(directory, days):
     with open(directory+days[0], 'r') as f:
         for token in [t for t in f.readlines() if t]:
             if token:
-                word, prob = token.split(',')[0], float(token.split(',')[1])
+                sptoken = token.split(',')
+                word, prob = sptoken[0], float(sptoken[1])
                 if prob > 1e-5:
                     curr_model[word] = prob
     return curr_model
