@@ -21,7 +21,7 @@ def generate_word_cloud(file):
     # use mask
     mask_img =  np.array(generate_mask_image(file))
 
-    wc = WordCloud(relative_scaling=0.1, background_color="white", mask=mask_img, prefer_horizontal=0.8, max_words=400, max_font_size=500, repeat=True,font_path='./font/AmaticSC-Bold.ttf', margin=0)
+    wc = WordCloud(relative_scaling=0.1, background_color='white', colormap='Dark2_r', mask=mask_img, prefer_horizontal=0.8, max_words=400, max_font_size=500, repeat=True,font_path='./font/AmaticSC-Bold.ttf', margin=0)
     
     # generate word cloud
     wc.generate(' '.join(words))
@@ -30,11 +30,12 @@ def generate_word_cloud(file):
     wc.to_file('./word-cloud/'+file.split('/')[-1].split('.')[0]+'.png')
 
 def generate_mask_image(text):
+    # filename text is like `trend-yyyymmdd.png`
     text = text.split('-')[-1].split('.')[0][2:]
     text = text[4:]+text[2:4]+text[:2]
-    img = Image.new('RGB', (1280, 360), color = (255, 255, 255))
+    img = Image.new('RGB', (2560, 800), color = (255, 255, 255))
 
-    fnt = ImageFont.truetype('./font/gabo.otf', 400)
+    fnt = ImageFont.truetype('./font/gabo.otf', 800)
     d = ImageDraw.Draw(img)
     d.text((0,-70), text, font=fnt, fill=(0, 0, 0))
 
