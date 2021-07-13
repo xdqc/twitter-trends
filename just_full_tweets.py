@@ -51,6 +51,6 @@ for tweet in iterator:
 
             # print(json.dumps(tweet))
             tweet_count -= 1
-            if tweet_count <= 0 or -1 < time % 3600 < 2:
+            if tweet_count <= 0 or -1 < time % 3600 < 1:
                 break
 
