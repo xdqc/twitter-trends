@@ -16,7 +16,7 @@ def make_prev_model(directory, days):
             # copensate for short days
             daily_words_len = int(day.split('-')[-1].split('.')[0]) + 10000000
             # weight damping for older days
-            daily_words_len /= (math.log(i) + 1)
+            daily_words_len /= (math.log1p(i) + 1)
             total_words_len += daily_words_len
             for token in f.readlines():
                 if token:
