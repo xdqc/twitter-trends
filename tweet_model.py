@@ -14,21 +14,16 @@ def get_sentences(file):
         tweets = [t for t in f.readlines() if t]
         for tweet in tweets:
             numTweet += 1
-            hashtag = re.findall(r'"text": "([^"]+)", "indices"', tweet)
-            hashtags = []
-            if hashtag:
-                numTweetHashtag += 1
-                hashtags.extend(h.upper() for h in hashtag if h.find('\\')<0)   # ignore non-alphabetic hashtag
-
             textPossible = re.findall(r'"text":"([^"]*)", "hashtags"', tweet)
             if textPossible:
                 text = textPossible[0].strip()
-                if len(text)>25 or len(text.split())>5:
-                    text = ' '.join(hashtags) + ' ' + text[0].lower() + text[1:]
+                if len(text)>15 or len(text.split())>3:
                     sentences.append(text)
 
-    print(file,'total tweets:',numTweet, '; tweets with hashtag:', numTweetHashtag, numTweetHashtag/numTweet)
-    print(file,'total sentences:', len(sentences), '; unique sentences:', len(set(sentences)))
+    print(file,'total tweets:',numTweet)
+    # print(file,'tweets with hashtag:', numTweetHashtag, numTweetHashtag/numTweet)
+    print(file,'total sentences:', len(sentences))
+    print(file,'unique sentences:', len(set(sentences)))
 
     freq = Counter(sentences)
     freq = sorted(freq.items(), key=lambda x: (x[0],len(x[0])), reverse=False) # sort alphabetic then length
