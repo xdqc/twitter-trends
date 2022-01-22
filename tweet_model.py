@@ -40,9 +40,11 @@ def get_sentences(file):
         #     #     print('+',pluses,'\t-', minues, '\tl', len(sentences[i]))
         #     #     print(sentences[i])
         #     #     print(sentences[i+1])
-        if sentences[i] in sentences[i+1] or sentences[i+1] in sentences[i]:
+        if sentences[i] in sentences[i+1] :
             sentences[i] = ''
-
+        elif sentences[i+1] in sentences[i]:
+            sentences[i+1] = sentences[i]
+            sentences[i] = ''
     sentences = [x for x in sentences if x]
 
     print(file, 'distinct sentences:',len(sentences))
