@@ -16,7 +16,7 @@ with open("config.yml", 'r') as stream:
     except yaml.YAMLError as exc:
         print(exc)
 
-tweet_count = 30000
+tweet_count = 100000
 
 twitter_stream = TwitterStream(auth=oauth)
 
