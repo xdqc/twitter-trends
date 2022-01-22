@@ -17,7 +17,7 @@ def get_sentences(file):
             textPossible = re.findall(r'"text":"([^"]*)", "hashtags"', tweet)
             if textPossible:
                 text = textPossible[0].strip()
-                if len(text)>15 or len(text.split())>3:
+                if (len(text)>15 or len(text.split())>3) and text.upper() != text:
                     sentences.append(text)
 
     print(file,'total tweets:',numTweet)
@@ -45,7 +45,7 @@ def get_sentences(file):
 
     sentences = [x for x in sentences if x]
 
-    print(file, 'distinct unique sentences:',len(sentences))
+    print(file, 'distinct sentences:',len(sentences))
     return sentences
 
 
@@ -70,12 +70,25 @@ def build_models():
         if len(file) - len(file.replace('-','')) == 1:
             sentences = get_sentences(file)
             unigrams, bigrams = [], []
-            # count all words in tweet text
+            valid_sentences = 0
             for text in sentences:
+                # skip tweets with many CONSECUTIVE UPPERCASE WORDS or NUMBERS
+                consec_upper = 0
+                for w in text.split():
+                    if w.upper() == w:
+                        consec_upper += 1
+                    else:
+                        consec_upper = 0
+                    if consec_upper >= 3:
+                        break
+                if consec_upper >= 3:
+                    continue
+                valid_sentences += 1
                 words_in_a_tweet = [w.strip('\'').lower() for w in re.findall(r'[\da-zA-Z\']+', text) if w.replace('\'','')]
                 unigrams.extend(words_in_a_tweet)
-                bigrams_in_a_tweet = set([b for b in zip(words_in_a_tweet[:-1], words_in_a_tweet[1:])])
+                bigrams_in_a_tweet = [b for b in zip(words_in_a_tweet[:-1], words_in_a_tweet[1:])]
                 bigrams.extend(bigrams_in_a_tweet)
+            print(file,'valid sentences:', valid_sentences)
             # build models 
             build_model(file, unigrams, 'unigrams')
             build_model(file, bigrams, 'bigrams')
