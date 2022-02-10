@@ -27,12 +27,12 @@ combine() {
     git commit -m trend-${yesterday}
     git push
 
-    mv -f ${directory}/tweets-${yesterday}.json ${directory}/archieve/tweets-${yesterday}.json
+    mv -f ${directory}/tweets-${yesterday}.json ${directory}/archive/tweets-${yesterday}.json
 }
 
 # do combo task once on 1:00~1:59am each day
 while true; do
-    if [ $(date +%H) -eq 19 ]; then
+    if [ $(date +%H) -eq 23 ]; then
         combine
     fi
     sleep 3598
