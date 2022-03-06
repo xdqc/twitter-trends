@@ -1,22 +1,32 @@
 ## What’s hot on twitter?
 
-![trend-20190315][wordcloud1]
+24-Feb-2022
+![trend-20220224][20220224]
 
-[wordcloud1]: https://raw.githubusercontent.com/xdqc/twitter-trend-daily/master/word-cloud/trend-2019/trend-201903/trend-20190315.png "trend-20190315"
+[20220224]: /word-cloud/trend-2022/trend-202202/trend-20220224.png "trend-20220224"
 
-![trend-20200312][wordcloud2]
+06-Jan-2021
+![trend-20210106][20210106]
 
-[wordcloud2]: https://raw.githubusercontent.com/xdqc/twitter-trend-daily/master/word-cloud/trend-2020/trend-202003/trend-20200312.png "trend-20200312"
+[20210106]: /word-cloud/trend-2021/trend-202101/trend-20210106.png "trend-20210106"
 
-![trend-20210106][wordcloud3]
+12-Mar-2020
+![trend-20200312][20200312]
 
-[wordcloud3]: https://raw.githubusercontent.com/xdqc/twitter-trend-daily/master/word-cloud/trend-2021/trend-202101/trend-20210106.png "trend-20210106"
+[20200312]: /word-cloud/trend-2020/trend-202003/trend-20200312.png "trend-20200312"
 
-### Check trends in history
-[2018](https://github.com/xdqc/twitter-trend-daily/tree/master/word-cloud/trend-2018)
-[2019](https://github.com/xdqc/twitter-trend-daily/tree/master/word-cloud/trend-2019)
-[2020](https://github.com/xdqc/twitter-trend-daily/tree/master/word-cloud/trend-2020)
-[2021](https://github.com/xdqc/twitter-trend-daily/tree/master/word-cloud/trend-2021)
+15-Mar-2019
+![trend-20190315][20190315]
+
+[20190315]: /word-cloud/trend-2019/trend-201903/trend-20190315.png "trend-20190315"
+
+### Checkout historical twitter trends
+
+[2022](/word-cloud/trend-2022) |
+[2021](/word-cloud/trend-2021) |
+[2020](/word-cloud/trend-2020) |
+[2019](/word-cloud/trend-2019) |
+[2018](/word-cloud/trend-2018)
 
 ### Data stream text mining procedure:
 
