@@ -1,19 +1,42 @@
-## What’s hot on twitter right now?
+## What’s hot on twitter?
 
-![trend-20221025][wordcloud]
+24-Feb-2022
+![trend-20220224][20220224]
 
-[wordcloud]: https://raw.githubusercontent.com/xdqc/tweet-trend-everyday/master/word-cloud/trend-20221025.png?token=AF5V4P7ADR6KQBZ4CEDTNIK6AXRMU "trend-20221025"
+[20220224]: /word-cloud/trend-2022/trend-202202/trend-20220224.png "trend-20220224"
 
-## [Check trends on old days ...](https://github.com/xdqc/tweet-trend-everyday/tree/master/word-cloud)
+06-Jan-2021
+![trend-20210106][20210106]
 
-## Text mining procedures:
+[20210106]: /word-cloud/trend-2021/trend-202101/trend-20210106.png "trend-20210106"
 
-1. **Fetch** raw tweet objects via twitter API (English tweets only).
+12-Mar-2020
+![trend-20200312][20200312]
 
-2. **Extract** texts + hashtags parts of tweets for each day.
+[20200312]: /word-cloud/trend-2020/trend-202003/trend-20200312.png "trend-20200312"
 
-3. **Build Model** Count unigram tokens (i.e. one English word as a token) of tweet texts, calculate the occurrence frequency of each token, order by frequency high to low.
+15-Mar-2019
+![trend-20190315][20190315]
 
-4. **Compare** today’s model and yesterday’s model. If today’s frequency of one token is higher than 2 times of yesterday’s frequency, which mean the hottiness of that word increased by more than 100%, record that token. (Only care about tokens with frequency >10^-5 )
+[20190315]: /word-cloud/trend-2019/trend-201903/trend-20190315.png "trend-20190315"
+
+### Checkout historical twitter trends
+
+[2022](/word-cloud/trend-2022) |
+[2021](/word-cloud/trend-2021) |
+[2020](/word-cloud/trend-2020) |
+[2019](/word-cloud/trend-2019) |
+[2018](/word-cloud/trend-2018)
+
+### Data stream text mining procedure:
+
+1. **Fetch** tweet stream via twitter API
+
+2. **Count** tweets and hashtags with space saving counters
+
+3. **Build Model** using unigram and bigram tokens
+
+4. **Find Trend** comparing current model with previous models
 
 5. Generate **Word Cloud** images.
+
