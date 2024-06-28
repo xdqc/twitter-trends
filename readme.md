@@ -1,24 +1,24 @@
 ## What’s hot on twitter?
 
 24-Feb-2022
-![trend-20221109][20221109]
+![trend-20221110][20221110]
 
-[20221109]: /word-cloud/trend-2022/trend-202202/trend-20221109.png "trend-20221109"
+[20221110]: /word-cloud/trend-2022/trend-202202/trend-20221110.png "trend-20221110"
 
 06-Jan-2021
-![trend-20221109][20221109]
+![trend-20221110][20221110]
 
-[20221109]: /word-cloud/trend-2021/trend-202101/trend-20221109.png "trend-20221109"
+[20221110]: /word-cloud/trend-2021/trend-202101/trend-20221110.png "trend-20221110"
 
 12-Mar-2020
-![trend-20221109][20221109]
+![trend-20221110][20221110]
 
-[20221109]: /word-cloud/trend-2020/trend-202003/trend-20221109.png "trend-20221109"
+[20221110]: /word-cloud/trend-2020/trend-202003/trend-20221110.png "trend-20221110"
 
 15-Mar-2019
-![trend-20221109][20221109]
+![trend-20221110][20221110]
 
-[20221109]: /word-cloud/trend-2019/trend-201903/trend-20221109.png "trend-20221109"
+[20221110]: /word-cloud/trend-2019/trend-201903/trend-20221110.png "trend-20221110"
 
 ### Checkout historical twitter trends
 
